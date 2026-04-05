@@ -191,63 +191,168 @@ body {
   pointer-events: none;
 }
 
+/* ── PANEL SHARED HEADER / STRUCTURE ── */
+.panel-header {
+  background: linear-gradient(135deg, rgba(255,214,102,0.10), rgba(255,178,58,0.04));
+  border-bottom: 1px solid rgba(255,214,102,0.22);
+  padding: 9px 13px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 16px 16px 0 0;
+}
+.panel-header-icon { font-size: 13px; line-height: 1; }
+.panel-header-title {
+  font-size: clamp(8px, 1.05vw, 10px);
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,214,102,0.85);
+}
+.panel-body  { padding: 11px 13px 13px; }
+.panel-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 0 13px; }
+
 /* ── SCORE BUG ── */
 #scoreBug {
-  right: 4%;
-  top: 30%;
-  width: min(17%, 158px);
+  right: 3%;
+  top: 20%;
+  width: min(19.5%, 192px);
+  padding: 0;
+  overflow: hidden;
 }
-.sb-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
-.sb-row:last-child { margin-bottom: 0; }
-.sb-lbl { font-size: clamp(8px, 1.1vw, 11px); text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.58); font-weight: 800; }
-.sb-val { font-size: clamp(14px, 2.2vw, 20px); font-weight: 900; color: #ffeab1; }
-.sb-val.big { font-size: clamp(22px, 3.2vw, 30px); }
-#cashoutRow { display: none; }
-#cashoutRow .sb-val { color: #7fff8a; font-size: clamp(12px, 1.8vw, 16px); }
+.sb-runs-lbl {
+  font-size: clamp(7px, 0.9vw, 9px);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.42);
+  font-weight: 800;
+  margin-bottom: 1px;
+}
+.sb-runs-val {
+  font-size: clamp(40px, 5.8vw, 54px);
+  font-weight: 900;
+  color: #ffeab1;
+  line-height: 1;
+  text-shadow: 0 0 22px rgba(255,220,130,0.28);
+  margin-bottom: 9px;
+}
+.sb-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+.sb-cell {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 9px;
+  padding: 7px 8px;
+}
+.sb-cell-lbl {
+  font-size: clamp(6px, 0.82vw, 8px);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.4);
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+.sb-cell-val {
+  font-size: clamp(13px, 1.8vw, 17px);
+  font-weight: 900;
+  color: #ffeab1;
+}
+.sb-cashout-box {
+  display: none;
+  margin-top: 9px;
+  background: rgba(60,220,90,0.06);
+  border: 1px solid rgba(100,255,130,0.22);
+  border-radius: 9px;
+  padding: 8px 10px;
+}
+.sb-cashout-box.visible { display: block; }
+.sb-cashout-lbl {
+  font-size: clamp(6px, 0.82vw, 8px);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(120,255,150,0.65);
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+.sb-cashout-val {
+  font-size: clamp(14px, 1.9vw, 18px);
+  font-weight: 900;
+  color: #7fff8a;
+}
 
 /* ── CONTROLS ── */
 #controls {
-  right: 4%;
-  top: 57%;
-  width: min(17%, 158px);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  right: 3%;
+  top: 55%;
+  width: min(19.5%, 192px);
+  padding: 0;
+  overflow: hidden;
+  display: block;
 }
-.ctrl-lbl { font-size: clamp(8px, 1.1vw, 10px); text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.58); font-weight: 800; }
-#balDisplay { font-size: clamp(14px, 2vw, 18px); font-weight: 900; color: #ffeab1; margin-bottom: 4px; }
+.ctrl-section { padding: 10px 13px; }
+.ctrl-lbl {
+  font-size: clamp(7px, 0.9vw, 9px);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.42);
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+#balDisplay {
+  font-size: clamp(17px, 2.3vw, 21px);
+  font-weight: 900;
+  color: #ffeab1;
+  text-shadow: 0 0 14px rgba(255,220,130,0.22);
+}
 
 input[type=number] {
   width: 100%;
-  padding: 7px 9px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.18);
-  background: rgba(4,6,10,0.65);
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.13);
+  background: rgba(4,6,10,0.72);
   color: #f6f7fb;
-  font-size: clamp(12px, 1.6vw, 14px);
+  font-size: clamp(12px, 1.5vw, 14px);
   font-weight: 700;
 }
-input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); }
+input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); box-shadow: 0 0 8px rgba(255,214,102,0.08); }
 
-.btn {
-  width: 100%;
-  padding: 7px 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(255,214,102,0.7);
-  background: rgba(255,178,58,0.10);
-  color: #ffeab1;
-  font-size: clamp(10px, 1.3vw, 12px);
-  font-weight: 800;
+/* ── DEPOSIT ── */
+.deposit-divider {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 13px;
+}
+.deposit-line { flex: 1; height: 1px; background: rgba(255,255,255,0.09); }
+.deposit-label {
+  font-size: clamp(7px, 0.85vw, 8px);
+  font-weight: 900;
+  letter-spacing: 2px;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  color: rgba(255,255,255,0.28);
+  white-space: nowrap;
+}
+.deposit-section { padding: 8px 13px 13px; }
+#depositBtn {
+  width: 100%;
+  margin-top: 7px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(90,190,255,0.45);
+  background: linear-gradient(135deg, rgba(40,110,220,0.16), rgba(60,160,255,0.08));
+  color: #80ccff;
+  font-size: clamp(9px, 1.15vw, 11px);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   cursor: pointer;
   transition: background 0.15s, box-shadow 0.15s;
 }
-.btn:hover { background: rgba(255,178,58,0.22); }
-.btn:disabled { opacity: 0.38; cursor: not-allowed; pointer-events: none; }
-
-.btn-row { display: flex; gap: 5px; }
-.btn-row .btn { flex: 1; }
+#depositBtn:hover { background: linear-gradient(135deg, rgba(40,110,220,0.30), rgba(60,160,255,0.18)); box-shadow: 0 0 14px rgba(80,160,255,0.22); }
 
 
 /* ── ACTION BUTTON ── */
@@ -511,34 +616,54 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); }
 
   <!-- ── SCORE BUG ── -->
   <div class="panel" id="scoreBug">
-    <div class="sb-row">
-      <span class="sb-lbl">Runs</span>
-      <span class="sb-val big" id="runsDisp">0</span>
+    <div class="panel-header">
+      <span class="panel-header-icon">🏏</span>
+      <span class="panel-header-title">Scorecard</span>
     </div>
-    <div class="sb-row">
-      <span class="sb-lbl">Balls Left</span>
-      <span class="sb-val" id="ballsDisp">6</span>
-    </div>
-    <div class="sb-row">
-      <span class="sb-lbl">Payout</span>
-      <span class="sb-val" id="payoutDisp">0.35×</span>
-    </div>
-    <div class="sb-row" id="cashoutRow">
-      <span class="sb-lbl">Cash Out</span>
-      <span class="sb-val" id="evDisp">—</span>
+    <div class="panel-body">
+      <div class="sb-runs-lbl">Current Runs</div>
+      <div class="sb-runs-val" id="runsDisp">0</div>
+      <div class="sb-grid">
+        <div class="sb-cell">
+          <div class="sb-cell-lbl">Balls Left</div>
+          <div class="sb-cell-val" id="ballsDisp">6</div>
+        </div>
+        <div class="sb-cell">
+          <div class="sb-cell-lbl">Payout</div>
+          <div class="sb-cell-val" id="payoutDisp">0.35×</div>
+        </div>
+      </div>
+      <div class="sb-cashout-box" id="cashoutRow">
+        <div class="sb-cashout-lbl">💰 Cash Out Value</div>
+        <div class="sb-cashout-val" id="evDisp">—</div>
+      </div>
     </div>
   </div>
 
   <!-- ── CONTROLS ── -->
   <div class="panel" id="controls">
-    <div class="ctrl-lbl">Balance</div>
-    <div id="balDisplay">$1,000.00</div>
-    <div class="ctrl-lbl">Bet Amount</div>
-    <input type="number" id="betInput" value="10" min="0.01" step="1"/>
-    <div class="btn-row">
-      <button class="btn" id="halvBtn">½</button>
-      <button class="btn" id="dblBtn">2×</button>
-      <button class="btn" id="maxBtn">Max</button>
+    <div class="panel-header">
+      <span class="panel-header-icon">🎯</span>
+      <span class="panel-header-title">Place Your Bet</span>
+    </div>
+    <div class="ctrl-section">
+      <div class="ctrl-lbl">Balance</div>
+      <div id="balDisplay">$1,000.00</div>
+    </div>
+    <div class="panel-divider"></div>
+    <div class="ctrl-section">
+      <div class="ctrl-lbl">Bet Amount</div>
+      <input type="number" id="betInput" value="10" min="0.01" step="1"/>
+    </div>
+    <div class="deposit-divider">
+      <div class="deposit-line"></div>
+      <span class="deposit-label">Deposit</span>
+      <div class="deposit-line"></div>
+    </div>
+    <div class="deposit-section">
+      <div class="ctrl-lbl">Add Funds</div>
+      <input type="number" id="depositInput" value="100" min="1" step="1"/>
+      <button id="depositBtn">+ Add Funds</button>
     </div>
   </div>
 
@@ -864,14 +989,14 @@ function updateDisplay() {
 
 function showCashoutOffer() {
   const ev = runs >= 36 ? 250 : EV(runs, ballsLeft);
-  $cashRow.style.display = 'flex';
+  $cashRow.classList.add('visible');
   $evD.textContent = ev.toFixed(2) + '×';
   $cashout.className = 'show';
   $cashout.textContent = `CASH OUT  ${ev.toFixed(2)}×`;
 }
 
 function hideCashoutOffer() {
-  $cashRow.style.display = 'none';
+  $cashRow.classList.remove('visible');
   $cashout.className = '';
 }
 
@@ -1223,17 +1348,12 @@ $betIn.addEventListener('change', () => {
   $betIn.value = bet;
 });
 
-document.getElementById('halvBtn').addEventListener('click', () => {
-  bet = Math.max(0.01, parseFloat((bet / 2).toFixed(2)));
-  $betIn.value = bet;
-});
-document.getElementById('dblBtn').addEventListener('click', () => {
-  bet = Math.min(balance, parseFloat((bet * 2).toFixed(2)));
-  $betIn.value = bet;
-});
-document.getElementById('maxBtn').addEventListener('click', () => {
-  bet = parseFloat(balance.toFixed(2));
-  $betIn.value = bet;
+document.getElementById('depositBtn').addEventListener('click', () => {
+  const amount = parseFloat(document.getElementById('depositInput').value) || 0;
+  if (amount <= 0) { $status.textContent = 'Enter a valid deposit amount!'; return; }
+  balance = parseFloat((balance + amount).toFixed(2));
+  updateDisplay();
+  $status.textContent = `$${amount.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})} added to your balance!`;
 });
 
 // ═══════════════════════════════════════════════════════════════

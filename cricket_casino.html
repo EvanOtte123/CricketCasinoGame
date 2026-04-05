@@ -214,7 +214,7 @@ body {
 
 /* ── SCORE BUG ── */
 #scoreBug {
-  right: 3%;
+  left: 3%;
   top: 20%;
   width: min(19.5%, 192px);
   padding: 0;
@@ -286,7 +286,7 @@ body {
 /* ── CONTROLS ── */
 #controls {
   right: 3%;
-  top: 55%;
+  top: 44%;
   width: min(19.5%, 192px);
   padding: 0;
   overflow: hidden;
@@ -506,6 +506,205 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); b
   padding: 8px 10px;
   display: none;
 }
+
+/* ── SETTINGS BUTTON ── */
+#settingsBtn {
+  position: absolute;
+  left: 3%;
+  top: 3%;
+  z-index: 5;
+  width: clamp(34px, 4.5vw, 44px);
+  height: clamp(34px, 4.5vw, 44px);
+  border-radius: 50%;
+  border: 1px solid rgba(255,214,102,0.45);
+  background: rgba(8,10,12,0.70);
+  backdrop-filter: blur(8px);
+  color: rgba(255,214,102,0.85);
+  font-size: clamp(15px, 2.1vw, 20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s, transform 0.25s;
+}
+#settingsBtn:hover {
+  background: rgba(255,178,58,0.18);
+  box-shadow: 0 0 16px rgba(255,178,58,0.25);
+  transform: rotate(30deg);
+}
+
+/* ── RULES MODAL ── */
+#rulesModal {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  display: grid;
+  place-items: center;
+  background: rgba(0,0,0,0.78);
+  backdrop-filter: blur(4px);
+}
+#rulesModal.hidden { display: none; }
+.rules-box {
+  background: rgba(7,9,14,0.97);
+  border: 2px solid rgba(255,214,102,0.45);
+  border-radius: 22px;
+  width: clamp(280px, 58vw, 560px);
+  max-height: 75vh;
+  overflow-y: auto;
+  box-shadow: 0 0 60px rgba(255,178,58,0.15);
+  display: flex;
+  flex-direction: column;
+}
+.rules-box::-webkit-scrollbar { width: 5px; }
+.rules-box::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); }
+.rules-box::-webkit-scrollbar-thumb { background: rgba(255,214,102,0.35); border-radius: 4px; }
+.rules-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid rgba(255,214,102,0.18);
+  background: linear-gradient(135deg, rgba(255,214,102,0.09), rgba(255,178,58,0.03));
+  border-radius: 20px 20px 0 0;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.rules-title {
+  font-size: clamp(14px, 2vw, 18px);
+  font-weight: 900;
+  color: #ffeab1;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.rules-close {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 50%;
+  width: 28px; height: 28px;
+  color: rgba(255,255,255,0.7);
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.rules-close:hover { background: rgba(255,80,80,0.3); color: #fff; }
+.rules-body { padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 14px; }
+.rules-section-title {
+  font-size: clamp(9px, 1.2vw, 11px);
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,214,102,0.75);
+  margin-bottom: 6px;
+}
+.rules-text {
+  font-size: clamp(11px, 1.4vw, 13px);
+  color: rgba(255,255,255,0.75);
+  line-height: 1.6;
+}
+.rules-outcomes { display: flex; flex-direction: column; gap: 6px; }
+.rules-outcome-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 7px 10px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+}
+.ro-badge {
+  font-size: clamp(9px, 1.1vw, 11px);
+  font-weight: 900;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.ro-badge.red    { background: rgba(255,60,60,0.18);   border: 1px solid rgba(255,80,80,0.4);   color: #ff7070; }
+.ro-badge.gold   { background: rgba(255,214,102,0.15); border: 1px solid rgba(255,214,102,0.4); color: #ffd166; }
+.ro-badge.green  { background: rgba(80,220,100,0.15);  border: 1px solid rgba(80,220,100,0.35); color: #7fff8a; }
+.ro-badge.blue   { background: rgba(80,180,255,0.15);  border: 1px solid rgba(80,180,255,0.35); color: #7bcfff; }
+.ro-badge.orange { background: rgba(255,120,40,0.18);  border: 1px solid rgba(255,120,40,0.4);  color: #ff8c35; }
+.ro-desc {
+  font-size: clamp(10px, 1.3vw, 12px);
+  color: rgba(255,255,255,0.68);
+  line-height: 1.5;
+}
+.rules-ev-box {
+  background: rgba(60,220,90,0.07);
+  border: 1px solid rgba(100,255,130,0.25);
+  border-radius: 10px;
+  padding: 11px 14px;
+}
+.rules-ev-title {
+  font-size: clamp(10px, 1.3vw, 12px);
+  font-weight: 900;
+  color: #7fff8a;
+  margin-bottom: 5px;
+  letter-spacing: 1px;
+}
+.rules-ev-text {
+  font-size: clamp(10px, 1.3vw, 12px);
+  color: rgba(200,255,210,0.75);
+  line-height: 1.6;
+}
+
+/* ── PAYOUT DROPDOWN ── */
+.payout-toggle {
+  width: 100%;
+  margin-top: 9px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,214,102,0.28);
+  background: rgba(255,214,102,0.05);
+  color: rgba(255,214,102,0.8);
+  font-size: clamp(8px, 1vw, 10px);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.15s;
+}
+.payout-toggle:hover { background: rgba(255,214,102,0.10); }
+.payout-arrow { transition: transform 0.22s; font-style: normal; }
+.payout-arrow.open { transform: rotate(180deg); }
+.payout-list {
+  display: none;
+  margin-top: 6px;
+  max-height: 160px;
+  overflow-y: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(4,6,10,0.75);
+}
+.payout-list.open { display: block; }
+.payout-list::-webkit-scrollbar { width: 4px; }
+.payout-list::-webkit-scrollbar-track { background: transparent; }
+.payout-list::-webkit-scrollbar-thumb { background: rgba(255,214,102,0.3); border-radius: 3px; }
+.payout-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: clamp(9px, 1.1vw, 11px);
+}
+.payout-row:last-child { border-bottom: none; }
+.payout-row.current {
+  background: rgba(255,214,102,0.12);
+  border-left: 2px solid #ffd166;
+}
+.payout-run { color: rgba(255,255,255,0.55); font-weight: 700; }
+.payout-val { color: #ffeab1; font-weight: 900; }
+.payout-row.current .payout-run { color: #ffd166; }
+.payout-row.current .payout-val { color: #ffd166; }
 </style>
 </head>
 <body>
@@ -590,6 +789,71 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); b
   <!-- FX Layer -->
   <div id="fxLayer"></div>
 
+  <!-- ── SETTINGS BUTTON ── -->
+  <button id="settingsBtn" title="Game Rules">⚙️</button>
+
+  <!-- ── RULES MODAL ── -->
+  <div id="rulesModal" class="hidden">
+    <div class="rules-box">
+      <div class="rules-header">
+        <span class="rules-title">⚙️ How To Play</span>
+        <button class="rules-close" id="rulesClose">✕</button>
+      </div>
+      <div class="rules-body">
+
+        <div>
+          <div class="rules-section-title">🏏 The Game</div>
+          <p class="rules-text">Cricket Casino is a 6-ball over betting game. Place your bet before the over starts, then bowl each ball one at a time. Your payout multiplier grows with every run you score — but if you're dismissed (WICKET), you lose your entire bet immediately.</p>
+        </div>
+
+        <div>
+          <div class="rules-section-title">⚡ Ball Outcomes</div>
+          <div class="rules-outcomes">
+            <div class="rules-outcome-row">
+              <span class="ro-badge red">WICKET</span>
+              <span class="ro-desc">You're dismissed — over ends instantly and you lose your full bet. No payout.</span>
+            </div>
+            <div class="rules-outcome-row">
+              <span class="ro-badge gold">DOT</span>
+              <span class="ro-desc">No runs scored. A legal ball is used up but the over continues.</span>
+            </div>
+            <div class="rules-outcome-row">
+              <span class="ro-badge green">1 / 2 / 3</span>
+              <span class="ro-desc">Runs added to your score. Your payout multiplier increases accordingly.</span>
+            </div>
+            <div class="rules-outcome-row">
+              <span class="ro-badge blue">FOUR!</span>
+              <span class="ro-desc">Boundary! 4 runs added to your score automatically.</span>
+            </div>
+            <div class="rules-outcome-row">
+              <span class="ro-badge blue">SIX!</span>
+              <span class="ro-desc">Maximum! 6 runs added. The crowd goes wild.</span>
+            </div>
+            <div class="rules-outcome-row">
+              <span class="ro-badge gold">WIDE</span>
+              <span class="ro-desc">Illegal delivery — +1 run added automatically, then you get a FREE bonus ball with a 2× run multiplier. A wicket on the bonus ball still ends the over at 0×.</span>
+            </div>
+            <div class="rules-outcome-row">
+              <span class="ro-badge orange">NO BALL</span>
+              <span class="ro-desc">Illegal delivery — +1 run added automatically, then you get a FREE bonus ball with a 3× run multiplier. A wicket on the bonus ball still ends the over at 0×.</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="rules-section-title">💰 Payouts</div>
+          <p class="rules-text">Payouts are based on total runs scored when the over ends (all 6 legal balls bowled or you cash out). The payout table in your Scorecard shows the exact multiplier for every run total from 0 to 36. Scoring 36 or more runs pays the maximum of <strong style="color:#ffd166">250×</strong>.</p>
+        </div>
+
+        <div class="rules-ev-box">
+          <div class="rules-ev-title">📈 Cash Out = Your Expected Value (EV)</div>
+          <p class="rules-ev-text">The Cash Out value shown is your <strong>Expected Value (EV)</strong> — the mathematically calculated fair worth of your position right now, based on your current runs and how many balls remain. Cashing out gives you exactly what your bet is statistically worth at that moment. It is neither a profit nor a loss trick — it is the true average outcome if you played this situation thousands of times.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <!-- Illegal ball badge -->
   <div id="illegalBadge"></div>
 
@@ -637,6 +901,11 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); b
         <div class="sb-cashout-lbl">💰 Cash Out Value</div>
         <div class="sb-cashout-val" id="evDisp">—</div>
       </div>
+      <button class="payout-toggle" id="payoutToggle">
+        <span>📊 Payout Table</span>
+        <em class="payout-arrow" id="payoutArrow">▼</em>
+      </button>
+      <div class="payout-list" id="payoutList"></div>
     </div>
   </div>
 
@@ -985,6 +1254,7 @@ function updateDisplay() {
   $ballsD.textContent = ballsLeft;
   $payoutD.textContent = P(runs).toFixed(2) + '×';
   $balD.textContent   = '$' + balance.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  if (typeof updatePayoutHighlight === 'function') updatePayoutHighlight();
 }
 
 function showCashoutOffer() {
@@ -1357,8 +1627,63 @@ document.getElementById('depositBtn').addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════════════════════════
+// SETTINGS / RULES MODAL
+// ═══════════════════════════════════════════════════════════════
+document.getElementById('settingsBtn').addEventListener('click', () => {
+  document.getElementById('rulesModal').classList.remove('hidden');
+});
+document.getElementById('rulesClose').addEventListener('click', () => {
+  document.getElementById('rulesModal').classList.add('hidden');
+});
+document.getElementById('rulesModal').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('rulesModal')) {
+    document.getElementById('rulesModal').classList.add('hidden');
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// PAYOUT TABLE DROPDOWN
+// ═══════════════════════════════════════════════════════════════
+function buildPayoutList() {
+  const list = document.getElementById('payoutList');
+  list.innerHTML = '';
+  for (let r = 0; r <= 36; r++) {
+    const row = document.createElement('div');
+    row.className = 'payout-row';
+    row.id = `pr-${r}`;
+    row.innerHTML = `<span class="payout-run">${r} run${r !== 1 ? 's' : ''}</span><span class="payout-val">${P(r).toFixed(2)}×</span>`;
+    list.appendChild(row);
+  }
+}
+
+function updatePayoutHighlight() {
+  for (let r = 0; r <= 36; r++) {
+    const row = document.getElementById(`pr-${r}`);
+    if (row) row.classList.toggle('current', r === runs);
+  }
+  // scroll to current row if list is open
+  const current = document.getElementById(`pr-${runs}`);
+  if (current && document.getElementById('payoutList').classList.contains('open')) {
+    current.scrollIntoView({ block: 'nearest' });
+  }
+}
+
+document.getElementById('payoutToggle').addEventListener('click', () => {
+  const list   = document.getElementById('payoutList');
+  const arrow  = document.getElementById('payoutArrow');
+  const isOpen = list.classList.toggle('open');
+  arrow.classList.toggle('open', isOpen);
+  if (isOpen) {
+    updatePayoutHighlight();
+    const current = document.getElementById(`pr-${runs}`);
+    if (current) setTimeout(() => current.scrollIntoView({ block: 'nearest' }), 50);
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
+buildPayoutList();
 updateDisplay();
 updateTracker();
 $reel.innerHTML = SYMBOL_SVG['BOWL'];

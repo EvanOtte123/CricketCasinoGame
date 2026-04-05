@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Cricket Casino</title>
+<style>
+:root { color-scheme: dark; font-family: "Segoe UI", system-ui, sans-serif; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  background: #050505;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#game {
+  position: relative;
+  width: min(100vw, 100vh);
+  height: min(100vw, 100vh);
+  max-width: 960px;
+  max-height: 960px;
+}
+
+#game.shake { animation: screenShake 520ms ease-out; }
+@keyframes screenShake {
+  0%,100% { transform: translate(0,0); }
+  12%  { transform: translate(-6px, 4px); }
+  24%  { transform: translate(7px,-5px); }
+  36%  { transform: translate(-5px,-3px); }
+  50%  { transform: translate(6px, 5px); }
+  64%  { transform: translate(-4px, 3px); }
+  78%  { transform: translate(4px,-4px); }
+  90%  { transform: translate(-3px, 2px); }
+}
+
+/* ── BACKGROUND ── */
+#bg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* ── PANELS ── */
+.panel {
+  position: absolute;
+  z-index: 2;
+  border-radius: 16px;
+  padding: 12px 14px;
+  color: #f6f7fb;
+  background: rgba(8,10,12,0.62);
+  border: 1px solid rgba(255,214,102,0.42);
+  backdrop-filter: blur(8px);
+}
+
+/* ── REEL ── */
+#reelWrap {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+#reelWindow {
+  width: clamp(170px, 22vw, 220px);
+  height: clamp(110px, 14vw, 150px);
+  border-radius: 22px;
+  border: 2px solid rgba(255,214,102,0.65);
+  background: rgba(2,4,8,0.78);
+  box-shadow: 0 0 50px rgba(255,214,102,0.12), inset 0 0 30px rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+#reelWindow.bonus-wide  { border-color: rgba(255,209,102,0.9); box-shadow: 0 0 40px rgba(255,209,102,0.3); }
+#reelWindow.bonus-noball { border-color: rgba(255,107,53,0.9);  box-shadow: 0 0 40px rgba(255,107,53,0.3);  }
+
+#reelSymbol {
+  font-size: clamp(28px, 4.5vw, 42px);
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-align: center;
+  line-height: 1.1;
+  color: #ffeab1;
+  text-shadow: 0 0 18px currentColor;
+  user-select: none;
+  padding: 0 12px;
+}
+
+#reelSymbol.is-spinning {
+  animation: reelJitter 0.09s linear infinite;
+  filter: blur(2px);
+}
+@keyframes reelJitter {
+  0%   { transform: translateY(-10px) scaleY(1.08); }
+  50%  { transform: translateY(10px)  scaleY(0.94); }
+  100% { transform: translateY(-10px) scaleY(1.08); }
+}
+
+#reelSymbol.is-popping {
+  animation: symbolPop 0.38s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+@keyframes symbolPop {
+  0%   { transform: scale(0.5);  opacity: 0.4; }
+  60%  { transform: scale(1.18); opacity: 1;   }
+  100% { transform: scale(1);    opacity: 1;   }
+}
+
+/* ── BONUS BADGE ── */
+#bonusBadge {
+  font-size: clamp(9px, 1.3vw, 11px);
+  font-weight: 900;
+  letter-spacing: 2px;
+  padding: 4px 14px;
+  border-radius: 20px 20px 0 0;
+  text-transform: uppercase;
+  display: none;
+  margin-bottom: -2px;
+  z-index: 4;
+}
+#bonusBadge.show-2x { display: block; background: rgba(255,209,102,0.22); border: 1px solid #ffd166; border-bottom: none; color: #ffd166; }
+#bonusBadge.show-3x { display: block; background: rgba(255,107,53,0.22);  border: 1px solid #ff6b35; border-bottom: none; color: #ff6b35; }
+
+/* ── ILLEGAL BADGE ── */
+#illegalBadge {
+  position: absolute;
+  top: 19%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  font-size: clamp(10px, 1.4vw, 13px);
+  font-weight: 900;
+  letter-spacing: 2px;
+  padding: 4px 16px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  display: none;
+  white-space: nowrap;
+}
+#illegalBadge.wide  { display: block; background: rgba(255,209,102,0.2); border: 1px solid #ffd166; color: #ffd166; }
+#illegalBadge.noball { display: block; background: rgba(255,107,53,0.2);  border: 1px solid #ff6b35; color: #ff6b35; }
+
+/* ── BALL TRACKER ── */
+#ballTracker {
+  position: absolute;
+  bottom: 27%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: clamp(6px, 1vw, 10px);
+  z-index: 3;
+  align-items: center;
+}
+
+.bd {
+  width: clamp(14px, 2vw, 20px);
+  height: clamp(14px, 2vw, 20px);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.10);
+  border: 2px solid rgba(255,255,255,0.2);
+  transition: all 0.3s ease;
+}
+.bd.active { background: rgba(255,214,102,0.9); border-color: #ffd166; box-shadow: 0 0 10px rgba(255,214,102,0.6); }
+.bd.used   { background: rgba(255,55,55,0.65);  border-color: rgba(255,80,80,0.8); }
+.bd.illegal { background: rgba(255,140,0,0.7);  border-color: rgba(255,140,0,0.9); }
+
+/* ── STATUS TEXT ── */
+#statusText {
+  position: absolute;
+  left: 50%;
+  bottom: 21.5%;
+  transform: translateX(-50%);
+  z-index: 3;
+  font-size: clamp(11px, 1.6vw, 14px);
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  text-shadow: 0 2px 10px rgba(0,0,0,0.9);
+  white-space: nowrap;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* ── SCORE BUG ── */
+#scoreBug {
+  right: 4%;
+  top: 30%;
+  width: min(17%, 158px);
+}
+.sb-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
+.sb-row:last-child { margin-bottom: 0; }
+.sb-lbl { font-size: clamp(8px, 1.1vw, 11px); text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.58); font-weight: 800; }
+.sb-val { font-size: clamp(14px, 2.2vw, 20px); font-weight: 900; color: #ffeab1; }
+.sb-val.big { font-size: clamp(22px, 3.2vw, 30px); }
+#cashoutRow { display: none; }
+#cashoutRow .sb-val { color: #7fff8a; font-size: clamp(12px, 1.8vw, 16px); }
+
+/* ── CONTROLS ── */
+#controls {
+  right: 4%;
+  top: 57%;
+  width: min(17%, 158px);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ctrl-lbl { font-size: clamp(8px, 1.1vw, 10px); text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.58); font-weight: 800; }
+#balDisplay { font-size: clamp(14px, 2vw, 18px); font-weight: 900; color: #ffeab1; margin-bottom: 4px; }
+
+input[type=number] {
+  width: 100%;
+  padding: 7px 9px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(4,6,10,0.65);
+  color: #f6f7fb;
+  font-size: clamp(12px, 1.6vw, 14px);
+  font-weight: 700;
+}
+input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); }
+
+.btn {
+  width: 100%;
+  padding: 7px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,214,102,0.7);
+  background: rgba(255,178,58,0.10);
+  color: #ffeab1;
+  font-size: clamp(10px, 1.3vw, 12px);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.btn:hover { background: rgba(255,178,58,0.22); }
+.btn:disabled { opacity: 0.38; cursor: not-allowed; pointer-events: none; }
+
+.btn-row { display: flex; gap: 5px; }
+.btn-row .btn { flex: 1; }
+
+
+/* ── ACTION BUTTON ── */
+#actionBtn {
+  position: absolute;
+  left: 50%;
+  bottom: 7.5%;
+  transform: translateX(-50%);
+  z-index: 4;
+  min-width: clamp(150px, 22vw, 200px);
+  padding: clamp(10px,1.6vw,14px) clamp(20px,3vw,32px);
+  border-radius: 18px;
+  border: 2px solid rgba(255,214,102,0.85);
+  background: rgba(255,178,58,0.16);
+  color: #ffeab1;
+  font-size: clamp(16px, 2.5vw, 22px);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-shadow: 0 0 14px rgba(255,214,102,0.4);
+  box-shadow: 0 0 30px rgba(255,178,58,0.18);
+}
+#actionBtn:hover  { background: rgba(255,178,58,0.28); box-shadow: 0 0 44px rgba(255,178,58,0.3); }
+#actionBtn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+
+/* ── CASHOUT BUTTON ── */
+#cashoutBtn {
+  position: absolute;
+  left: 50%;
+  bottom: 3%;
+  transform: translateX(-50%);
+  z-index: 4;
+  padding: clamp(7px,1.1vw,10px) clamp(18px,2.5vw,26px);
+  border-radius: 12px;
+  border: 1px solid rgba(100,255,120,0.75);
+  background: rgba(50,200,80,0.12);
+  color: #7fff8a;
+  font-size: clamp(11px, 1.6vw, 14px);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: none;
+  white-space: nowrap;
+}
+#cashoutBtn.show { display: block; }
+#cashoutBtn:hover { background: rgba(50,200,80,0.25); }
+
+/* ── FX LAYER ── */
+#fxLayer { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: hidden; }
+
+.fx-sparkle {
+  position: absolute;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff, #ffe08a 45%, transparent);
+  box-shadow: 0 0 12px rgba(255,224,138,0.6);
+  animation: sparkleFly 620ms ease-out forwards;
+  transform: translate(-50%,-50%);
+}
+@keyframes sparkleFly {
+  0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.5); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.1); }
+}
+
+.fx-confetti {
+  position: absolute;
+  width: 7px; height: 12px;
+  border-radius: 3px;
+  animation: confettiFall 2.1s ease-out forwards;
+  transform: translate(-50%,-50%);
+}
+@keyframes confettiFall {
+  0%   { opacity: 0; transform: translate(-50%,-50%) translateY(-20px) rotate(0deg); }
+  10%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%,-50%) translateY(var(--fall)) rotate(var(--rot)); }
+}
+
+.fx-runpop {
+  position: absolute;
+  transform: translate(-50%,-50%);
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 900;
+  color: #ffd166;
+  text-shadow: 0 0 24px rgba(255,214,102,0.8);
+  pointer-events: none;
+  animation: runPopAnim 850ms ease-out forwards;
+  z-index: 7;
+  white-space: nowrap;
+}
+@keyframes runPopAnim {
+  0%   { opacity: 0; transform: translate(-50%,-40%) scale(0.5); }
+  28%  { opacity: 1; transform: translate(-50%,-60%) scale(1.22); }
+  65%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%,-90%) scale(0.9); }
+}
+
+/* ── OVERLAY ── */
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 38%, rgba(255,214,102,0.16), rgba(0,0,0,0.82) 58%);
+  backdrop-filter: blur(3px);
+}
+.overlay.hidden { display: none; }
+
+.ov-box {
+  background: rgba(7,9,14,0.94);
+  border: 2px solid rgba(255,214,102,0.55);
+  border-radius: 26px;
+  padding: clamp(24px,4vw,40px) clamp(30px,5vw,56px);
+  text-align: center;
+  box-shadow: 0 0 70px rgba(255,178,58,0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.ov-title { font-size: clamp(26px, 4.5vw, 40px); font-weight: 900; color: #ffeab1; text-shadow: 0 0 22px rgba(255,214,102,0.5); }
+.ov-title.red { color: #ff6b6b; text-shadow: 0 0 22px rgba(255,60,60,0.5); }
+.ov-sub   { font-size: clamp(12px, 1.8vw, 15px); color: rgba(255,255,255,0.65); margin: 2px 0; }
+.ov-mult  { font-size: clamp(38px, 6vw, 56px); font-weight: 900; color: #ffd166; margin: 6px 0 14px; }
+.ov-btn {
+  min-width: clamp(130px, 18vw, 170px);
+  padding: clamp(9px,1.4vw,13px) 0;
+  border-radius: 14px;
+  border: 2px solid rgba(255,214,102,0.8);
+  background: rgba(255,178,58,0.14);
+  color: #ffeab1;
+  font-size: clamp(13px, 1.8vw, 16px);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.ov-btn:hover { background: rgba(255,178,58,0.28); }
+
+/* ── ODDS PANEL ── */
+#oddsPanel {
+  left: 3%;
+  top: 88%;
+  width: min(15.5%, 145px);
+  padding: 8px 10px;
+  display: none;
+}
+</style>
+</head>
+<body>
+<div id="game">
+
+  <!-- ── BACKGROUND SVG ── -->
+  <svg id="bg" viewBox="0 0 960 960" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="outerGrad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="#173618"/>
+        <stop offset="55%"  stop-color="#0f2810"/>
+        <stop offset="100%" stop-color="#050a05"/>
+      </radialGradient>
+      <radialGradient id="pitchGrad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"   stop-color="#c8a050"/>
+        <stop offset="100%" stop-color="#8b6318"/>
+      </radialGradient>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <!-- mowing stripes -->
+      <pattern id="stripes" x="0" y="0" width="44" height="44" patternUnits="userSpaceOnUse" patternTransform="rotate(15)">
+        <rect x="0" y="0" width="22" height="44" fill="rgba(255,255,255,0.016)"/>
+      </pattern>
+    </defs>
+
+    <!-- outer dark -->
+    <rect width="960" height="960" fill="#060a06"/>
+    <!-- main oval -->
+    <ellipse cx="480" cy="480" rx="450" ry="430" fill="url(#outerGrad)"/>
+    <!-- mowing texture -->
+    <ellipse cx="480" cy="480" rx="450" ry="430" fill="url(#stripes)"/>
+    <!-- inner circle line -->
+    <ellipse cx="480" cy="480" rx="288" ry="272" fill="none" stroke="rgba(255,255,255,0.11)" stroke-width="1.5"/>
+    <!-- 30-yard circle (dashed) -->
+    <ellipse cx="480" cy="480" rx="205" ry="195" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="6,5"/>
+    <!-- boundary rope -->
+    <ellipse cx="480" cy="480" rx="445" ry="425" fill="none" stroke="rgba(255,255,255,0.14)" stroke-width="2" stroke-dasharray="9,7"/>
+
+    <!-- pitch -->
+    <rect x="451" y="310" width="58" height="340" rx="5" fill="url(#pitchGrad)" opacity="0.88"/>
+    <rect x="451" y="310" width="58" height="340" rx="5" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+
+    <!-- popping crease top -->
+    <line x1="444" y1="388" x2="516" y2="388" stroke="rgba(255,255,255,0.65)" stroke-width="2.2"/>
+    <!-- bowling crease top -->
+    <line x1="451" y1="395" x2="509" y2="395" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+    <!-- popping crease bottom -->
+    <line x1="444" y1="572" x2="516" y2="572" stroke="rgba(255,255,255,0.65)" stroke-width="2.2"/>
+    <!-- bowling crease bottom -->
+    <line x1="451" y1="565" x2="509" y2="565" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+
+    <!-- stumps top (3) -->
+    <line x1="469" y1="313" x2="469" y2="390" stroke="rgba(255,248,200,0.8)" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="480" y1="313" x2="480" y2="390" stroke="rgba(255,248,200,0.8)" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="491" y1="313" x2="491" y2="390" stroke="rgba(255,248,200,0.8)" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- bails top -->
+    <line x1="466" y1="314" x2="476" y2="312" stroke="rgba(255,240,160,0.9)" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="484" y1="312" x2="494" y2="314" stroke="rgba(255,240,160,0.9)" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- stumps bottom (3) -->
+    <line x1="469" y1="570" x2="469" y2="647" stroke="rgba(255,248,200,0.8)" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="480" y1="570" x2="480" y2="647" stroke="rgba(255,248,200,0.8)" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="491" y1="570" x2="491" y2="647" stroke="rgba(255,248,200,0.8)" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- bails bottom -->
+    <line x1="466" y1="646" x2="476" y2="648" stroke="rgba(255,240,160,0.9)" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="484" y1="648" x2="494" y2="646" stroke="rgba(255,240,160,0.9)" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- stadium light glows -->
+    <circle cx="140" cy="110" r="70" fill="rgba(255,255,200,0.035)"/>
+    <circle cx="820" cy="110" r="70" fill="rgba(255,255,200,0.035)"/>
+    <circle cx="90"  cy="840" r="60" fill="rgba(255,255,200,0.025)"/>
+    <circle cx="870" cy="840" r="60" fill="rgba(255,255,200,0.025)"/>
+
+    <!-- scoreboard top-center -->
+    <rect x="388" y="22" width="184" height="68" rx="9" fill="rgba(255,214,102,0.05)" stroke="rgba(255,214,102,0.14)" stroke-width="1"/>
+    <text x="480" y="47" text-anchor="middle" fill="rgba(255,214,102,0.55)" font-size="13" font-weight="900" letter-spacing="4" font-family="Segoe UI,sans-serif">CRICKET</text>
+    <text x="480" y="68" text-anchor="middle" fill="rgba(255,214,102,0.38)" font-size="10" font-weight="700" letter-spacing="3" font-family="Segoe UI,sans-serif">CASINO</text>
+  </svg>
+
+  <!-- FX Layer -->
+  <div id="fxLayer"></div>
+
+  <!-- Illegal ball badge -->
+  <div id="illegalBadge"></div>
+
+  <!-- ── REEL ── -->
+  <div id="reelWrap">
+    <div id="bonusBadge">2× BONUS SPIN</div>
+    <div id="reelWindow">
+      <div id="reelSymbol">BOWL</div>
+    </div>
+  </div>
+
+  <!-- Ball tracker -->
+  <div id="ballTracker">
+    <div class="bd" id="bd0"></div>
+    <div class="bd" id="bd1"></div>
+    <div class="bd" id="bd2"></div>
+    <div class="bd" id="bd3"></div>
+    <div class="bd" id="bd4"></div>
+    <div class="bd" id="bd5"></div>
+  </div>
+
+  <!-- Status text -->
+  <div id="statusText">Place your bet and bowl the first ball!</div>
+
+  <!-- ── SCORE BUG ── -->
+  <div class="panel" id="scoreBug">
+    <div class="sb-row">
+      <span class="sb-lbl">Runs</span>
+      <span class="sb-val big" id="runsDisp">0</span>
+    </div>
+    <div class="sb-row">
+      <span class="sb-lbl">Balls Left</span>
+      <span class="sb-val" id="ballsDisp">6</span>
+    </div>
+    <div class="sb-row">
+      <span class="sb-lbl">Payout</span>
+      <span class="sb-val" id="payoutDisp">0.35×</span>
+    </div>
+    <div class="sb-row" id="cashoutRow">
+      <span class="sb-lbl">Cash Out</span>
+      <span class="sb-val" id="evDisp">—</span>
+    </div>
+  </div>
+
+  <!-- ── CONTROLS ── -->
+  <div class="panel" id="controls">
+    <div class="ctrl-lbl">Balance</div>
+    <div id="balDisplay">$1,000.00</div>
+    <div class="ctrl-lbl">Bet Amount</div>
+    <input type="number" id="betInput" value="10" min="0.01" step="1"/>
+    <div class="btn-row">
+      <button class="btn" id="halvBtn">½</button>
+      <button class="btn" id="dblBtn">2×</button>
+      <button class="btn" id="maxBtn">Max</button>
+    </div>
+  </div>
+
+  <!-- ── ACTION BUTTON ── -->
+  <button id="actionBtn">BOWL</button>
+
+  <!-- ── CASHOUT BUTTON ── -->
+  <button id="cashoutBtn">CASH OUT</button>
+
+  <!-- ── OVERLAY ── -->
+  <div class="overlay hidden" id="overlay">
+    <div class="ov-box">
+      <div class="ov-title" id="ovTitle">WICKET!</div>
+      <div class="ov-sub"   id="ovSub">You were dismissed</div>
+      <div class="ov-mult"  id="ovMult">0×</div>
+      <button class="ov-btn" id="ovBtn">Play Again</button>
+    </div>
+  </div>
+
+</div><!-- #game -->
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// PAYOUT TABLE  P(r)
+// ═══════════════════════════════════════════════════════════════
+const PAYOUT_TABLE = [
+  0.35, 0.40, 0.45, 0.50, 0.60, 0.70, 0.75, 0.90,
+  1.00, 1.10, 1.30, 1.50, 1.70, 1.90, 2.20, 2.50,
+  2.80, 3.20, 3.60, 4.10, 4.70, 6.00, 7.75, 10.00,
+  12.75,16.25,21.00,27.00,34.00,44.00,56.00,
+  72.00,93.00,120.00,150.00,195.00,250.00
+];
+function P(r) { return r >= 36 ? 250 : PAYOUT_TABLE[Math.max(0, r)]; }
+
+// ═══════════════════════════════════════════════════════════════
+// EV TABLE  EV[runs 0-36][balls_remaining 0-6]
+// ═══════════════════════════════════════════════════════════════
+const EV_TABLE = [
+  [0.35,  0.40,  0.46,  0.53,  0.63,  0.76,  0.96 ],
+  [0.40,  0.46,  0.52,  0.61,  0.72,  0.89,  1.14 ],
+  [0.45,  0.51,  0.60,  0.70,  0.84,  1.04,  1.35 ],
+  [0.50,  0.59,  0.69,  0.80,  0.97,  1.22,  1.61 ],
+  [0.60,  0.68,  0.78,  0.92,  1.13,  1.45,  1.94 ],
+  [0.70,  0.77,  0.90,  1.06,  1.32,  1.72,  2.34 ],
+  [0.75,  0.88,  1.03,  1.23,  1.55,  2.06,  2.84 ],
+  [0.90,  1.01,  1.18,  1.43,  1.84,  2.48,  3.45 ],
+  [1.00,  1.12,  1.33,  1.63,  2.11,  2.86,  4.00 ],
+  [1.10,  1.29,  1.53,  1.89,  2.47,  3.38,  4.77 ],
+  [1.30,  1.47,  1.76,  2.18,  2.85,  3.92,  5.56 ],
+  [1.50,  1.70,  2.03,  2.52,  3.32,  4.57,  6.49 ],
+  [1.70,  1.95,  2.34,  2.91,  3.85,  5.32,  7.59 ],
+  [1.90,  2.18,  2.63,  3.30,  4.38,  6.10,  8.76 ],
+  [2.20,  2.47,  3.01,  3.78,  5.04,  7.02, 10.11 ],
+  [2.50,  2.87,  3.49,  4.38,  5.83,  8.14, 11.72 ],
+  [2.80,  3.24,  3.95,  4.97,  6.63,  9.28, 13.40 ],
+  [3.20,  3.66,  4.48,  5.67,  7.58, 10.62, 15.35 ],
+  [3.60,  4.17,  5.10,  6.43,  8.58, 12.00, 17.47 ],
+  [4.10,  4.71,  5.77,  7.29,  9.72, 13.59, 19.81 ],
+  [4.70,  5.50,  6.71,  8.47, 11.27, 15.75, 22.82 ],
+  [6.00,  6.72,  8.10, 10.10, 13.26, 18.30, 26.36 ],
+  [7.75,  8.58, 10.19, 12.51, 16.15, 21.94, 31.17 ],
+  [10.00, 10.95, 12.89, 15.67, 20.00, 26.86, 37.70 ],
+  [12.75, 14.01, 16.35, 19.66, 24.72, 32.66, 45.08 ],
+  [16.25, 17.57, 20.53, 24.67, 30.88, 40.45, 55.17 ],
+  [21.00, 22.85, 26.42, 31.40, 38.73, 49.81, 66.49 ],
+  [27.00, 29.14, 33.16, 38.66, 46.57, 58.21, 75.24 ],
+  [34.00, 36.36, 41.01, 47.18, 55.79, 68.06, 85.31 ],
+  [44.00, 46.73, 51.86, 58.43, 67.36, 79.58, 95.89 ],
+  [56.00, 59.13, 64.71, 71.54, 80.38, 91.92,106.38 ],
+  [72.00, 75.41, 81.15, 87.72, 95.74,105.56,117.09 ],
+  [93.00, 96.22,101.17,106.39,112.24,118.78,125.78 ],
+  [120.00,122.98,127.19,131.24,135.29,139.43,143.57],
+  [150.00,152.31,155.26,157.83,160.08,162.34,164.59],
+  [195.00,195.22,195.44,195.66,195.89,196.11,196.33],
+  [250,   250,   250,   250,   250,   250,   250   ]
+];
+function EV(r, b) {
+  if (r >= 36) return 250;
+  return EV_TABLE[Math.max(0,Math.min(36,r))][Math.max(0,Math.min(6,b))];
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SPIN OUTCOMES
+// ═══════════════════════════════════════════════════════════════
+const MAIN = [
+  { id:'OUT',    runs:0, weight:14.04, label:'WICKET!',  color:'#ff5b5b' },
+  { id:'WIDE',   runs:1, weight: 4.05, label:'WIDE',     color:'#ffd166' },
+  { id:'NOBALL', runs:1, weight: 1.01, label:'NO BALL',  color:'#ff8c35' },
+  { id:'DOT',    runs:0, weight:19.21, label:'· · ·',    color:'#9a9a9a' },
+  { id:'ONE',    runs:1, weight:27.30, label:'1',        color:'#7fff8a' },
+  { id:'TWO',    runs:2, weight:15.17, label:'2',        color:'#7fff8a' },
+  { id:'THREE',  runs:3, weight: 4.05, label:'3',        color:'#6bcfff' },
+  { id:'FOUR',   runs:4, weight: 9.10, label:'FOUR!',    color:'#6bcfff' },
+  { id:'SIX',    runs:6, weight: 6.07, label:'SIX!',     color:'#ffd166' },
+];
+
+const BONUS = [
+  { id:'OUT',   runs:0, weight:15, label:'WICKET!', color:'#ff5b5b' },
+  { id:'DOT',   runs:0, weight:21, label:'· · ·',   color:'#9a9a9a' },
+  { id:'ONE',   runs:1, weight:28, label:'1',       color:'#7fff8a' },
+  { id:'TWO',   runs:2, weight:17, label:'2',       color:'#7fff8a' },
+  { id:'THREE', runs:3, weight: 4, label:'3',       color:'#6bcfff' },
+  { id:'FOUR',  runs:4, weight: 9, label:'FOUR!',   color:'#6bcfff' },
+  { id:'SIX',   runs:6, weight: 6, label:'SIX!',   color:'#ffd166' },
+];
+
+const SPIN_LABELS = [
+  '0','1','2','3','4','5','6','·','FOUR!','SIX!','WIDE','NO BALL','WICKET!'
+];
+
+function roll(pool) {
+  const total = pool.reduce((s,o) => s + o.weight, 0);
+  let r = Math.random() * total;
+  for (const o of pool) { r -= o.weight; if (r <= 0) return o; }
+  return pool[pool.length - 1];
+}
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let balance     = 1000;
+let bet         = 10;
+let runs        = 0;
+let ballsLeft   = 6;
+let ballsUsed   = 0;   // legal balls already bowled
+let bonusMult   = 1;
+// phase: 'idle' | 'spinning' | 'bonus' | 'awaiting' | 'done'
+let phase       = 'idle';
+let spinTimer   = null;
+
+// ═══════════════════════════════════════════════════════════════
+// DOM
+// ═══════════════════════════════════════════════════════════════
+const $game      = document.getElementById('game');
+const $reel      = document.getElementById('reelSymbol');
+const $reelWin   = document.getElementById('reelWindow');
+const $bonus     = document.getElementById('bonusBadge');
+const $illegal   = document.getElementById('illegalBadge');
+const $status    = document.getElementById('statusText');
+const $action    = document.getElementById('actionBtn');
+const $cashout   = document.getElementById('cashoutBtn');
+const $overlay   = document.getElementById('overlay');
+const $ovTitle   = document.getElementById('ovTitle');
+const $ovSub     = document.getElementById('ovSub');
+const $ovMult    = document.getElementById('ovMult');
+const $ovBtn     = document.getElementById('ovBtn');
+const $runsD     = document.getElementById('runsDisp');
+const $ballsD    = document.getElementById('ballsDisp');
+const $payoutD   = document.getElementById('payoutDisp');
+const $evD       = document.getElementById('evDisp');
+const $cashRow   = document.getElementById('cashoutRow');
+const $balD      = document.getElementById('balDisplay');
+const $betIn     = document.getElementById('betInput');
+const $fxLayer   = document.getElementById('fxLayer');
+
+// ═══════════════════════════════════════════════════════════════
+// DISPLAY UPDATE
+// ═══════════════════════════════════════════════════════════════
+function updateDisplay() {
+  $runsD.textContent  = runs;
+  $ballsD.textContent = ballsLeft;
+  $payoutD.textContent = P(runs).toFixed(2) + '×';
+  $balD.textContent   = '$' + balance.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function showCashoutOffer() {
+  const ev = runs >= 36 ? 250 : EV(runs, ballsLeft);
+  $cashRow.style.display = 'flex';
+  $evD.textContent = ev.toFixed(2) + '×';
+  $cashout.className = 'show';
+  $cashout.textContent = `CASH OUT  ${ev.toFixed(2)}×`;
+}
+
+function hideCashoutOffer() {
+  $cashRow.style.display = 'none';
+  $cashout.className = '';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BALL TRACKER
+// ═══════════════════════════════════════════════════════════════
+function updateTracker() {
+  for (let i = 0; i < 6; i++) {
+    const el = document.getElementById(`bd${i}`);
+    el.className = 'bd';
+    if (i < ballsUsed)                      el.classList.add('used');
+    else if (i === ballsUsed && phase !== 'idle') el.classList.add('active');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// REEL ANIMATION
+// ═══════════════════════════════════════════════════════════════
+function spinThen(ms, outcome, cb) {
+  $reel.className = 'is-spinning';
+  $reel.style.color = '#fff';
+  $reel.textContent = '?';
+  clearTimeout(spinTimer);
+  spinTimer = setTimeout(() => {
+    $reel.className = 'is-popping';
+    $reel.textContent = outcome.label;
+    $reel.style.color  = outcome.color;
+    cb();
+  }, ms);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FX
+// ═══════════════════════════════════════════════════════════════
+function sparkles(n = 12) {
+  const cx = $game.offsetWidth * 0.5;
+  const cy = $game.offsetHeight * 0.38;
+  for (let i = 0; i < n; i++) {
+    const el = document.createElement('div');
+    el.className = 'fx-sparkle';
+    const a = Math.random() * Math.PI * 2;
+    const d = 40 + Math.random() * 90;
+    el.style.left = cx + 'px';
+    el.style.top  = cy + 'px';
+    el.style.setProperty('--dx', Math.cos(a)*d + 'px');
+    el.style.setProperty('--dy', Math.sin(a)*d + 'px');
+    $fxLayer.appendChild(el);
+    setTimeout(() => el.remove(), 700);
+  }
+}
+
+function confetti() {
+  const colors = ['#ffd166','#ff6b6b','#7fff8a','#6bcfff','#ff8c35','#ffffff'];
+  for (let i = 0; i < 45; i++) {
+    const el = document.createElement('div');
+    el.className = 'fx-confetti';
+    el.style.left = (15 + Math.random()*70) + '%';
+    el.style.top  = (5  + Math.random()*25) + '%';
+    el.style.background = colors[Math.floor(Math.random()*colors.length)];
+    el.style.setProperty('--fall', (200 + Math.random()*420) + 'px');
+    el.style.setProperty('--rot',  (-200 + Math.random()*400) + 'deg');
+    $fxLayer.appendChild(el);
+    setTimeout(() => el.remove(), 2200);
+  }
+}
+
+function shake() {
+  $game.classList.remove('shake');
+  void $game.offsetWidth;
+  $game.classList.add('shake');
+  setTimeout(() => $game.classList.remove('shake'), 520);
+}
+
+function runPop(text) {
+  const el = document.createElement('div');
+  el.className = 'fx-runpop';
+  el.textContent = text;
+  el.style.left = '50%';
+  el.style.top  = '38%';
+  $game.appendChild(el);
+  setTimeout(() => el.remove(), 900);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// GAME OVER — OUT
+// ═══════════════════════════════════════════════════════════════
+function triggerOut(isBonus) {
+  phase = 'done';
+  hideCashoutOffer();
+  $action.style.display = 'none';
+  $reel.style.color = '#ff5b5b';
+  shake();
+
+  const msg = isBonus ? 'BONUS WICKET — over ends at 0×!' : 'WICKET! — over ends immediately at 0×!';
+  $status.textContent = msg;
+
+  setTimeout(() => {
+    $ovTitle.textContent   = isBonus ? 'BONUS OUT!' : 'WICKET!';
+    $ovTitle.className     = 'ov-title red';
+    $ovSub.textContent     = `Dismissed for ${runs} runs — you lose your entire bet`;
+    $ovMult.textContent    = '0×';
+    $ovMult.style.color    = '#ff6b6b';
+    $overlay.classList.remove('hidden');
+  }, 950);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// OVER COMPLETE
+// ═══════════════════════════════════════════════════════════════
+function overComplete() {
+  phase = 'done';
+  hideCashoutOffer();
+  $action.style.display = 'none';
+
+  const mult = P(runs);
+  const win  = parseFloat((bet * mult).toFixed(2));
+  balance    = parseFloat((balance + win).toFixed(2));
+  updateDisplay();
+
+  if (runs >= 36) { confetti(); shake(); runPop('250×!'); }
+  else if (mult >= 10) { confetti(); shake(); }
+  else if (mult >= 2)  { sparkles(22); }
+
+  setTimeout(() => {
+    $ovTitle.textContent  = runs >= 36 ? 'SIX SIXES!' : 'OVER!';
+    $ovTitle.className    = 'ov-title';
+    $ovSub.textContent    = `${runs} run${runs!==1?'s':''} scored this over`;
+    $ovMult.textContent   = mult.toFixed(2) + '×';
+    $ovMult.style.color   = mult >= 1 ? '#ffd166' : '#aaa';
+    $overlay.classList.remove('hidden');
+  }, 1100);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CASHOUT
+// ═══════════════════════════════════════════════════════════════
+function doCashout() {
+  if (phase !== 'awaiting') return;
+  phase = 'done';
+  hideCashoutOffer();
+  $action.style.display = 'none';
+
+  const mult = runs >= 36 ? 250 : EV(runs, ballsLeft);
+  const win  = parseFloat((bet * mult).toFixed(2));
+  balance    = parseFloat((balance + win).toFixed(2));
+  updateDisplay();
+
+  if (mult >= 5) { sparkles(20); }
+
+  $ovTitle.textContent  = 'CASHED OUT!';
+  $ovTitle.className    = 'ov-title';
+  $ovSub.textContent    = `${runs} runs · You collected:`;
+  $ovMult.textContent   = mult.toFixed(2) + '×';
+  $ovMult.style.color   = '#ffd166';
+  $overlay.classList.remove('hidden');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BONUS SPIN
+// ═══════════════════════════════════════════════════════════════
+function doBonusSpin() {
+  phase = 'bonus';
+  $action.disabled = true;
+  hideCashoutOffer();
+  $illegal.className = '';
+
+  const mult = bonusMult; // capture before reset
+  $bonus.textContent = mult + '× BONUS SPIN';
+  $bonus.className   = mult === 2 ? 'show-2x' : 'show-3x';
+  $reelWin.className = mult === 2 ? 'bonus-wide' : 'bonus-noball';
+
+  $status.textContent = mult + '× Bonus spin — bowling...';
+
+  const result = roll(BONUS);
+  spinThen(950, result, () => {
+    $bonus.className   = '';
+    $reelWin.className = '';
+
+    if (result.id === 'OUT') {
+      triggerOut(true);
+      return;
+    }
+
+    const gained = result.runs * mult;
+    runs        += gained;
+    bonusMult    = 1;
+    ballsUsed++;
+    ballsLeft--;
+
+    updateDisplay();
+    updateTracker();
+
+    if (gained > 0) {
+      sparkles(gained >= 4 ? 18 : 10);
+      runPop('+' + gained);
+      $status.textContent = `${result.id === 'DOT' ? 'Dot' : result.runs + ' run' + (result.runs !== 1 ? 's' : '')} × ${mult}× = +${gained} runs`;
+    } else {
+      $status.textContent = 'Dot ball on bonus — no runs';
+    }
+
+    if (runs >= 36) { setTimeout(overComplete, 1200); return; }
+    if (ballsLeft <= 0) { setTimeout(overComplete, 1200); return; }
+
+    phase = 'awaiting';
+    $action.disabled    = false;
+    $action.textContent = 'BOWL';
+    showCashoutOffer();
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MAIN SPIN
+// ═══════════════════════════════════════════════════════════════
+function doMainSpin() {
+  if (phase !== 'idle' && phase !== 'awaiting') return;
+
+  const b = parseFloat($betIn.value) || 0;
+  if (b <= 0 || b > balance) {
+    $status.textContent = b <= 0 ? 'Enter a valid bet!' : 'Insufficient balance!';
+    return;
+  }
+  bet = b;
+
+  // Deduct bet only at game start
+  if (phase === 'idle') {
+    balance = parseFloat((balance - bet).toFixed(2));
+    updateDisplay();
+  }
+
+  phase = 'spinning';
+  $action.disabled = true;
+  hideCashoutOffer();
+  $illegal.className = '';
+
+  $status.textContent = 'Bowling...';
+
+  const result = roll(MAIN);
+  spinThen(720, result, () => {
+
+    // ── OUT ──
+    if (result.id === 'OUT') {
+      $status.textContent = 'WICKET!';
+      triggerOut(false);
+      return;
+    }
+
+    // ── WIDE ──
+    if (result.id === 'WIDE') {
+      runs += 1;
+      bonusMult = 2;
+      $illegal.className = 'wide';
+      $illegal.textContent = 'WIDE  +1 run  →  2× bonus spin';
+      $status.textContent = 'Wide! +1 run — 2× bonus spin incoming...';
+      updateDisplay();
+      runPop('+1');
+      setTimeout(doBonusSpin, 1300);
+      return;
+    }
+
+    // ── NO BALL ──
+    if (result.id === 'NOBALL') {
+      runs += 1;
+      bonusMult = 3;
+      $illegal.className = 'noball';
+      $illegal.textContent = 'NO BALL  +1 run  →  3× bonus spin';
+      $status.textContent = 'No Ball! +1 run — 3× bonus spin incoming...';
+      updateDisplay();
+      runPop('+1');
+      setTimeout(doBonusSpin, 1300);
+      return;
+    }
+
+    // ── LEGAL BALL (dot / 1 / 2 / 3 / 4 / 6) ──
+    runs     += result.runs;
+    ballsUsed++;
+    ballsLeft--;
+
+    updateDisplay();
+    updateTracker();
+
+    if (result.runs > 0) {
+      sparkles(result.runs >= 6 ? 22 : result.runs >= 4 ? 16 : 10);
+      runPop('+' + result.runs);
+    }
+
+    const subLabel = {
+      DOT:   'Dot ball — no runs',
+      ONE:   '1 run',
+      TWO:   '2 runs',
+      THREE: '3 runs',
+      FOUR:  'FOUR! Boundary!',
+      SIX:   'SIX! Maximum!',
+    }[result.id] || '';
+    $status.textContent = subLabel;
+
+    if (result.id === 'SIX' || result.id === 'FOUR') shake();
+
+    if (runs >= 36) { setTimeout(overComplete, 1200); return; }
+    if (ballsLeft <= 0) { setTimeout(overComplete, 1200); return; }
+
+    phase = 'awaiting';
+    $action.disabled    = false;
+    $action.textContent = 'BOWL';
+    showCashoutOffer();
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RESET
+// ═══════════════════════════════════════════════════════════════
+function resetGame() {
+  runs      = 0;
+  ballsLeft = 6;
+  ballsUsed = 0;
+  bonusMult = 1;
+  phase     = 'idle';
+
+  $reel.className    = '';
+  $reel.textContent  = 'BOWL';
+  $reel.style.color  = '#ffeab1';
+  $bonus.className   = '';
+  $reelWin.className = '';
+  $illegal.className = '';
+
+  $action.style.display = '';
+  $action.disabled      = false;
+  $action.textContent   = 'BOWL';
+  $overlay.classList.add('hidden');
+  hideCashoutOffer();
+
+  for (let i = 0; i < 6; i++) document.getElementById(`bd${i}`).className = 'bd';
+
+  updateDisplay();
+  $status.textContent = 'Place your bet and bowl the first ball!';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EVENTS
+// ═══════════════════════════════════════════════════════════════
+$action.addEventListener('click', doMainSpin);
+$cashout.addEventListener('click', doCashout);
+$ovBtn.addEventListener('click', resetGame);
+
+$betIn.addEventListener('change', () => {
+  bet = Math.max(0.01, parseFloat($betIn.value) || 10);
+  $betIn.value = bet;
+});
+
+document.getElementById('halvBtn').addEventListener('click', () => {
+  bet = Math.max(0.01, parseFloat((bet / 2).toFixed(2)));
+  $betIn.value = bet;
+});
+document.getElementById('dblBtn').addEventListener('click', () => {
+  bet = Math.min(balance, parseFloat((bet * 2).toFixed(2)));
+  $betIn.value = bet;
+});
+document.getElementById('maxBtn').addEventListener('click', () => {
+  bet = parseFloat(balance.toFixed(2));
+  $betIn.value = bet;
+});
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+updateDisplay();
+updateTracker();
+</script>
+</body>
+</html>

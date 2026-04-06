@@ -128,22 +128,27 @@ body {
   gap: 0;
 }
 
-#reelWindow {
-  width: clamp(90px, 12vw, 115px);
-  height: clamp(68px, 9vw, 92px);
-  border-radius: 20px;
+#reelContainer {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.reel-win {
+  width: clamp(62px, 8.5vw, 88px);
+  height: clamp(62px, 8.5vw, 88px);
+  border-radius: 14px;
   border: 2px solid rgba(255,214,102,0.75);
   background: rgba(4,6,10,0.96);
-  box-shadow: 0 0 50px rgba(255,214,102,0.15), inset 0 0 30px rgba(0,0,0,0.8);
+  box-shadow: 0 0 30px rgba(255,214,102,0.15), inset 0 0 20px rgba(0,0,0,0.8);
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   position: relative;
 }
-
-#reelWindow.bonus-wide  { border-color: rgba(255,209,102,0.9); box-shadow: 0 0 40px rgba(255,209,102,0.3); }
-#reelWindow.bonus-noball { border-color: rgba(255,107,53,0.9);  box-shadow: 0 0 40px rgba(255,107,53,0.3);  }
+.reel-win.bonus-wide   { border-color: rgba(255,209,102,0.9); box-shadow: 0 0 40px rgba(255,209,102,0.3); }
+.reel-win.bonus-noball { border-color: rgba(255,107,53,0.9);  box-shadow: 0 0 40px rgba(255,107,53,0.3);  }
 
 /* ── REEL SLOTS (3-reel layout) ── */
 .reel-slot {
@@ -175,7 +180,7 @@ body {
   width: 100%;
   height: 100%;
 }
-.reel-symbol svg { max-width: 86%; max-height: 86%; width: auto; height: auto; }
+.reel-symbol svg { width: 100% !important; height: 100% !important; max-width: 100%; max-height: 100%; display: block; }
 
 .reel-symbol.is-spinning {
   animation: reelJitter 0.09s linear infinite;
@@ -1163,8 +1168,10 @@ input[type=number]:disabled, #depositBtn:disabled {
   <!-- ── REEL ── -->
   <div id="reelWrap">
     <div id="bonusBadge">2× BONUS SPIN</div>
-    <div id="reelWindow">
-      <div class="reel-symbol" id="reelSymbol"></div>
+    <div id="reelContainer">
+      <div class="reel-win" id="reelWin0"><div class="reel-symbol" id="reelSymbol0"></div></div>
+      <div class="reel-win" id="reelWin1"><div class="reel-symbol" id="reelSymbol1"></div></div>
+      <div class="reel-win" id="reelWin2"><div class="reel-symbol" id="reelSymbol2"></div></div>
     </div>
   </div>
 
@@ -1631,14 +1638,14 @@ let ballsUsed   = 0;   // legal balls already bowled
 let bonusMult   = 1;
 // phase: 'idle' | 'spinning' | 'bonus' | 'awaiting' | 'done'
 let phase       = 'idle';
-let spinTimer   = null;
+
 
 // ═══════════════════════════════════════════════════════════════
 // DOM
 // ═══════════════════════════════════════════════════════════════
 const $game      = document.getElementById('game');
-const $reel      = document.getElementById('reelSymbol');
-const $reelWin   = document.getElementById('reelWindow');
+const $reels    = [0,1,2].map(i => document.getElementById('reelSymbol' + i));
+const $reelWins = [0,1,2].map(i => document.getElementById('reelWin' + i));
 const $bonus     = document.getElementById('bonusBadge');
 const $illegal   = document.getElementById('illegalBadge');
 const $status    = document.getElementById('statusText');
@@ -1710,25 +1717,32 @@ function updateTracker() {
 // ═══════════════════════════════════════════════════════════════
 // REEL ANIMATION
 // ═══════════════════════════════════════════════════════════════
+let spinTimers = [null, null, null];
 function spinThen(ms, outcome, cb) {
-  $reel.className = 'reel-symbol is-spinning';
-  $reel.innerHTML = '<span style="font-size:clamp(28px,4vw,44px);font-weight:900;color:#fff;text-shadow:0 0 18px #fff">?</span>';
-  clearTimeout(spinTimer);
-  spinTimer = setTimeout(() => {
-    $reel.className = 'reel-symbol is-popping';
-    // OUT outcome shows either batsman (OUT) or stumps (WICKET_ALT) 50/50
-    let symbolKey = outcome.id;
-    if (outcome.id === 'OUT') {
-      symbolKey = Math.random() < 0.5 ? 'OUT' : 'WICKET_ALT';
-      lastOutSymbol = symbolKey; // track which one showed for overlay text
-    }
-    if (SYMBOL_SVG[symbolKey]) {
-      $reel.innerHTML = SYMBOL_SVG[symbolKey];
-    } else {
-      $reel.innerHTML = `<span style="color:${outcome.color};text-shadow:0 0 18px ${outcome.color}">${outcome.label}</span>`;
-    }
-    cb();
-  }, ms);
+  $reels.forEach(r => {
+    r.className = 'reel-symbol is-spinning';
+    r.innerHTML = '<span style="font-size:clamp(20px,3vw,32px);font-weight:900;color:#fff;text-shadow:0 0 18px #fff">?</span>';
+  });
+
+  // Resolve symbol key once so all 3 reels show the same outcome
+  let symbolKey = outcome.id;
+  if (outcome.id === 'OUT') {
+    symbolKey = Math.random() < 0.5 ? 'OUT' : 'WICKET_ALT';
+    lastOutSymbol = symbolKey;
+  }
+  const symbolHTML = SYMBOL_SVG[symbolKey]
+    ? SYMBOL_SVG[symbolKey]
+    : `<span style="color:${outcome.color};text-shadow:0 0 18px ${outcome.color}">${outcome.label}</span>`;
+
+  const stagger = 130;
+  spinTimers.forEach((_, i) => {
+    clearTimeout(spinTimers[i]);
+    spinTimers[i] = setTimeout(() => {
+      $reels[i].className = 'reel-symbol is-popping';
+      $reels[i].innerHTML = symbolHTML;
+      if (i === 2) cb();
+    }, ms + i * stagger);
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1819,7 +1833,7 @@ function triggerOut(isBonus) {
   hideCashoutOffer();
   hideMultOverlay();
   document.getElementById('btnRow').style.display = 'none';
-  $reel.style.color = '#ff5b5b';
+  $reels.forEach(r => r.style.color = '#ff5b5b');
   shake();
 
   const outLabel = lastOutSymbol === 'OUT' ? 'OUT!' : 'WICKET!';
@@ -1928,7 +1942,7 @@ function doBonusSpin() {
   const mult = bonusMult; // capture before reset
   $bonus.textContent = mult + '× BONUS SPIN';
   $bonus.className   = mult === 2 ? 'show-2x' : 'show-3x';
-  $reelWin.className = mult === 2 ? 'bonus-wide' : 'bonus-noball';
+  $reelWins.forEach(w => w.className = 'reel-win ' + (mult === 2 ? 'bonus-wide' : 'bonus-noball'));
 
   // Keep multiplier overlay visible during spin, update footer
   document.getElementById('moFooter').textContent = mult + '× BONUS SPIN — SPINNING...';
@@ -1938,7 +1952,7 @@ function doBonusSpin() {
   const result = roll(BONUS);
   spinThen(950, result, () => {
     $bonus.className   = '';
-    $reelWin.className = '';
+    $reelWins.forEach(w => w.className = 'reel-win');
     hideMultOverlay();
 
     if (result.id === 'OUT') {
@@ -2093,10 +2107,10 @@ function resetGame() {
   bonusMult = 1;
   phase     = 'idle';
 
-  $reel.className    = 'reel-symbol';
-  $reel.innerHTML    = SYMBOL_SVG['BOWL'];
+  $reels.forEach(r => r.className = 'reel-symbol');
+  $reels.forEach(r => r.innerHTML = SYMBOL_SVG['BOWL']);
   $bonus.className   = '';
-  $reelWin.className = '';
+  $reelWins.forEach(w => w.className = 'reel-win');
   $illegal.className = '';
 
   document.getElementById('btnRow').style.display = '';
@@ -2193,8 +2207,8 @@ document.getElementById('payoutToggle').addEventListener('click', () => {
 buildPayoutList();
 updateDisplay();
 updateTracker();
-$reel.className = 'reel-symbol';
-$reel.innerHTML = SYMBOL_SVG['BOWL'];
+$reels.forEach(r => r.className = 'reel-symbol');
+$reels.forEach(r => r.innerHTML = SYMBOL_SVG['BOWL']);
 </script>
 </body>
 </html>

@@ -699,7 +699,50 @@ input[type=number]:disabled, #depositBtn:disabled {
 }
 .ov-btn:hover { background: rgba(255,178,58,0.28); }
 
-/* ── CASH OUT CONFIRM OVERLAY BUTTONS ── */
+/* ── CASH OUT CONFIRM OVERLAY ── */
+.co-payout-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2.5vw, 24px);
+  margin: 10px 0 4px;
+}
+.co-payout-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.co-payout-lbl {
+  font-size: clamp(7px, 0.9vw, 9px);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.4);
+  font-weight: 900;
+}
+.co-payout-mult {
+  font-size: clamp(30px, 4.8vw, 46px);
+  font-weight: 900;
+  color: #ffd166;
+  text-shadow: 0 0 22px rgba(255,209,102,0.7);
+  line-height: 1;
+}
+.co-payout-arrow {
+  font-size: clamp(20px, 3vw, 28px);
+  color: rgba(255,255,255,0.35);
+  font-weight: 300;
+}
+.co-payout-dollar {
+  font-size: clamp(30px, 4.8vw, 46px);
+  font-weight: 900;
+  color: #7fff8a;
+  text-shadow: 0 0 22px rgba(80,255,120,0.6);
+  line-height: 1;
+}
+.co-bet-line {
+  font-size: clamp(10px, 1.3vw, 12px);
+  color: rgba(255,255,255,0.38);
+  margin-bottom: 8px;
+}
 .co-btn-row {
   display: flex;
   gap: clamp(10px, 2vw, 18px);
@@ -1219,8 +1262,19 @@ input[type=number]:disabled, #depositBtn:disabled {
   <div class="overlay hidden" id="cashoutOverlay">
     <div class="ov-box">
       <div class="ov-title" id="coTitle">CASH OUT?</div>
-      <div class="ov-sub"   id="coSub">0 runs · Cash out now?</div>
-      <div class="ov-mult"  id="coMult" style="color:#7fff8a;">1.00×</div>
+      <div class="ov-sub"   id="coSub">0 runs scored</div>
+      <div class="co-payout-row">
+        <div class="co-payout-cell">
+          <div class="co-payout-lbl">Multiplier</div>
+          <div class="co-payout-mult" id="coMult">1.00×</div>
+        </div>
+        <div class="co-payout-arrow">→</div>
+        <div class="co-payout-cell">
+          <div class="co-payout-lbl">You Receive</div>
+          <div class="co-payout-dollar" id="coDollar">$10.00</div>
+        </div>
+      </div>
+      <div class="co-bet-line" id="coBetLine">on your $10.00 bet</div>
       <div class="co-btn-row">
         <button class="ov-btn co-confirm-btn" id="coConfirmBtn">CASH OUT</button>
         <button class="ov-btn co-back-btn"    id="coBackBtn">KEEP BOWLING</button>
@@ -1432,6 +1486,32 @@ const SYMBOL_SVG = {
     <text x="50" y="91" text-anchor="middle" fill="#ffd166" font-size="12" font-weight="900" letter-spacing="3" font-family="Segoe UI,sans-serif">SIX!</text>
   </svg>`,
 
+  WICKET_ALT: `<svg viewBox="0 0 100 100" width="95" height="95" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="gWA" cx="50%" cy="40%"><stop offset="0%" stop-color="#cc2222"/><stop offset="100%" stop-color="#5a0000"/></radialGradient>
+    </defs>
+    <rect width="100" height="100" rx="18" fill="url(#gWA)" opacity="0.85"/>
+    <!-- batsman body silhouette walking off -->
+    <circle cx="52" cy="20" r="8" fill="rgba(255,255,255,0.88)"/>
+    <!-- torso -->
+    <line x1="52" y1="28" x2="50" y2="52" stroke="rgba(255,255,255,0.88)" stroke-width="5" stroke-linecap="round"/>
+    <!-- arm holding bat down -->
+    <line x1="50" y1="36" x2="38" y2="50" stroke="rgba(255,255,255,0.88)" stroke-width="4" stroke-linecap="round"/>
+    <!-- bat -->
+    <line x1="38" y1="50" x2="32" y2="66" stroke="rgba(255,255,255,0.75)" stroke-width="5" stroke-linecap="round"/>
+    <!-- other arm raised -->
+    <line x1="50" y1="36" x2="64" y2="30" stroke="rgba(255,255,255,0.88)" stroke-width="4" stroke-linecap="round"/>
+    <!-- legs walking -->
+    <line x1="50" y1="52" x2="42" y2="70" stroke="rgba(255,255,255,0.88)" stroke-width="4.5" stroke-linecap="round"/>
+    <line x1="50" y1="52" x2="59" y2="68" stroke="rgba(255,255,255,0.88)" stroke-width="4.5" stroke-linecap="round"/>
+    <!-- stumps in background -->
+    <rect x="58" y="44" width="5" height="22" rx="2.5" fill="rgba(255,255,255,0.30)"/>
+    <rect x="66" y="44" width="5" height="22" rx="2.5" fill="rgba(255,255,255,0.30)"/>
+    <rect x="74" y="44" width="5" height="22" rx="2.5" fill="rgba(255,255,255,0.30)"/>
+    <!-- label -->
+    <text x="50" y="92" text-anchor="middle" fill="white" font-size="13" font-weight="900" letter-spacing="2" font-family="Segoe UI,sans-serif">OUT!</text>
+  </svg>`,
+
   BOWL: `<svg viewBox="0 0 100 100" width="95" height="95" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <radialGradient id="gBowl" cx="38%" cy="30%"><stop offset="0%" stop-color="#ffeab1"/><stop offset="100%" stop-color="#a07020"/></radialGradient>
@@ -1580,8 +1660,13 @@ function spinThen(ms, outcome, cb) {
   clearTimeout(spinTimer);
   spinTimer = setTimeout(() => {
     $reel.className = 'reel-symbol is-popping';
-    if (SYMBOL_SVG[outcome.id]) {
-      $reel.innerHTML = SYMBOL_SVG[outcome.id];
+    // OUT outcome shows either stumps (OUT) or batsman walking off (WICKET_ALT) 50/50
+    let symbolKey = outcome.id;
+    if (outcome.id === 'OUT') {
+      symbolKey = Math.random() < 0.5 ? 'OUT' : 'WICKET_ALT';
+    }
+    if (SYMBOL_SVG[symbolKey]) {
+      $reel.innerHTML = SYMBOL_SVG[symbolKey];
     } else {
       $reel.innerHTML = `<span style="color:${outcome.color};text-shadow:0 0 18px ${outcome.color}">${outcome.label}</span>`;
     }
@@ -1728,6 +1813,8 @@ const $cashoutOverlay = document.getElementById('cashoutOverlay');
 const $coTitle        = document.getElementById('coTitle');
 const $coSub          = document.getElementById('coSub');
 const $coMult         = document.getElementById('coMult');
+const $coDollar       = document.getElementById('coDollar');
+const $coBetLine      = document.getElementById('coBetLine');
 const $coConfirmBtn   = document.getElementById('coConfirmBtn');
 const $coBackBtn      = document.getElementById('coBackBtn');
 
@@ -1737,9 +1824,11 @@ function doCashout() {
   // Show the confirm overlay populated with current values
   const mult = runs >= 36 ? 250 : EV(runs, ballsLeft);
   const win  = parseFloat((bet * mult).toFixed(2));
-  $coTitle.textContent = 'CASH OUT?';
-  $coSub.textContent   = `${runs} run${runs !== 1 ? 's' : ''} scored · Cash out now?`;
-  $coMult.textContent  = `$${win.toFixed(2)}`;
+  $coTitle.textContent  = 'CASH OUT?';
+  $coSub.textContent    = `${runs} run${runs !== 1 ? 's' : ''} scored`;
+  $coMult.textContent   = mult.toFixed(2) + '×';
+  $coDollar.textContent = '$' + win.toFixed(2);
+  $coBetLine.textContent = `on your $${bet.toFixed(2)} bet`;
   $cashoutOverlay.classList.remove('hidden');
 }
 

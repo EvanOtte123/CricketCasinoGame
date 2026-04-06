@@ -233,7 +233,7 @@ body {
 /* ── BALL TRACKER ── */
 #ballTracker {
   position: absolute;
-  bottom: 57%;
+  top: 55%;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -258,7 +258,7 @@ body {
 #statusText {
   position: absolute;
   left: 50%;
-  bottom: 51%;
+  top: 61%;
   transform: translateX(-50%);
   z-index: 3;
   font-size: clamp(11px, 1.6vw, 14px);
@@ -415,15 +415,24 @@ body {
   text-shadow: 0 0 18px rgba(80,255,120,0.6);
 }
 
-/* ── CONTROLS ── */
-#controls {
+/* ── BOTTOM SECTION wrapper ── */
+#bottomSection {
+  position: absolute;
   bottom: 2%;
   left: 50%;
   transform: translateX(-50%);
   width: min(92%, 700px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 4;
+}
+
+/* ── CONTROLS ── */
+#controls {
+  width: 100%;
   padding: 0;
-  top: auto;
-  right: auto;
   border: 1px solid rgba(255,214,102,0.35) !important;
   box-shadow: 0 0 24px rgba(255,178,58,0.12);
   overflow: hidden;
@@ -518,20 +527,21 @@ input[type=number]:disabled, #depositBtn:disabled {
 #depositBtn:hover { background: linear-gradient(135deg, rgba(40,110,220,0.36), rgba(60,160,255,0.22)); }
 
 
-/* ── BUTTON ROW (invisible overlay — hides both buttons when display:none) ── */
+/* ── BUTTON ROW (relative container inside #bottomSection) ── */
 #btnRow {
-  position: absolute;
-  inset: 0;
-  z-index: 4;
+  position: relative;
+  width: 100%;
+  height: clamp(52px, 8.5vw, 72px);
   pointer-events: none;
+  flex-shrink: 0;
 }
 
 /* ── ACTION BUTTON ── */
 #actionBtn {
   position: absolute;
   left: 50%;
-  bottom: 34%;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   pointer-events: auto;
   min-width: clamp(145px, 24vw, 220px);
   padding: clamp(12px,1.8vw,16px) clamp(22px,3.2vw,40px);
@@ -551,7 +561,7 @@ input[type=number]:disabled, #depositBtn:disabled {
 #actionBtn:hover {
   background: linear-gradient(160deg, #cc5000 0%, #ff7500 30%, #ff9d00 60%, #f07800 100%);
   box-shadow: 0 4px 32px rgba(255,120,0,0.8), 0 0 52px rgba(255,180,0,0.42), inset 0 1px 0 rgba(255,230,110,0.35);
-  transform: translateX(-50%) translateY(-1px);
+  transform: translate(-50%, calc(-50% - 1px));
 }
 #actionBtn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
 
@@ -559,8 +569,8 @@ input[type=number]:disabled, #depositBtn:disabled {
 #cashoutBtn {
   position: absolute;
   left: calc(50% + 120px);
-  bottom: 34%;
-  transform: none;
+  top: 50%;
+  transform: translateY(-50%);
   pointer-events: auto;
   width: clamp(68px, 9vw, 88px);
   height: clamp(52px, 7vw, 68px);
@@ -585,7 +595,7 @@ input[type=number]:disabled, #depositBtn:disabled {
 #cashoutBtn:hover {
   background: linear-gradient(135deg, #0c8228 0%, #20c84a 40%, #16de44 70%, #10a332 100%);
   box-shadow: 0 4px 26px rgba(20,200,70,0.7), 0 0 38px rgba(40,220,80,0.32);
-  transform: translateY(-1px);
+  transform: translateY(calc(-50% - 1px));
 }
 #cashoutBtn .co-label { font-size: clamp(7px, 0.95vw, 9px); letter-spacing: 1px; opacity: 0.85; }
 #cashoutBtn .co-mult  { font-size: clamp(12px, 1.7vw, 17px); font-weight: 900; color: #7fff8a; }
@@ -1136,37 +1146,37 @@ input[type=number]:disabled, #depositBtn:disabled {
     </div>
   </div>
 
-  <!-- ── CONTROLS ── -->
-  <div class="panel" id="controls">
-    <div class="ctrl-header">
-      <span style="font-size:11px">💰</span>
-      <span class="ctrl-header-title">Place Your Bet</span>
+  <!-- ── BOTTOM SECTION (BOWL + CONTROLS stacked) ── -->
+  <div id="bottomSection">
+    <div id="btnRow">
+      <button id="actionBtn">BOWL</button>
+      <button id="cashoutBtn">CASH OUT</button>
     </div>
-    <div class="ctrl-row">
-      <div class="ctrl-cell">
-        <div class="ctrl-lbl">Balance</div>
-        <div id="balDisplay">$1,000.00</div>
+    <div class="panel" id="controls">
+      <div class="ctrl-header">
+        <span style="font-size:11px">💰</span>
+        <span class="ctrl-header-title">Place Your Bet</span>
       </div>
-      <div class="ctrl-divider"></div>
-      <div class="ctrl-cell">
-        <div class="ctrl-lbl">Bet Amount</div>
-        <input type="number" id="betInput" value="10" min="0.01" step="1"/>
-      </div>
-      <div class="ctrl-divider"></div>
-      <div class="ctrl-cell">
-        <div class="ctrl-lbl">Add Funds</div>
-        <div class="ctrl-dep-row">
-          <input type="number" id="depositInput" value="100" min="1" step="1"/>
-          <button id="depositBtn">+ADD</button>
+      <div class="ctrl-row">
+        <div class="ctrl-cell">
+          <div class="ctrl-lbl">Balance</div>
+          <div id="balDisplay">$1,000.00</div>
+        </div>
+        <div class="ctrl-divider"></div>
+        <div class="ctrl-cell">
+          <div class="ctrl-lbl">Bet Amount</div>
+          <input type="number" id="betInput" value="10" min="0.01" step="1"/>
+        </div>
+        <div class="ctrl-divider"></div>
+        <div class="ctrl-cell">
+          <div class="ctrl-lbl">Add Funds</div>
+          <div class="ctrl-dep-row">
+            <input type="number" id="depositInput" value="100" min="1" step="1"/>
+            <button id="depositBtn">+ADD</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- ── BUTTON ROW ── -->
-  <div id="btnRow">
-    <button id="actionBtn">BOWL</button>
-    <button id="cashoutBtn">CASH OUT</button>
   </div>
 
   <!-- ── OVERLAY ── -->

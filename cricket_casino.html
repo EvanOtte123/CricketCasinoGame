@@ -130,15 +130,15 @@ body {
 }
 
 #reelWindow {
-  width: clamp(260px, 44vw, 400px);
-  height: clamp(140px, 19vw, 195px);
+  width: clamp(175px, 26vw, 230px);
+  height: clamp(140px, 19vw, 190px);
   border-radius: 20px;
-  border: 2px solid rgba(255,214,102,0.65);
-  background: rgba(2,4,8,0.82);
-  box-shadow: 0 0 50px rgba(255,214,102,0.12), inset 0 0 30px rgba(0,0,0,0.6);
+  border: 2px solid rgba(255,214,102,0.75);
+  background: rgba(4,6,10,0.96);
+  box-shadow: 0 0 50px rgba(255,214,102,0.15), inset 0 0 30px rgba(0,0,0,0.8);
   display: flex;
-  flex-direction: row;
-  align-items: stretch;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
   position: relative;
 }
@@ -471,22 +471,28 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); b
   bottom: 10%;
   transform: translateX(-50%);
   z-index: 4;
-  padding: clamp(7px,1.1vw,10px) clamp(18px,2.5vw,26px);
+  padding: clamp(8px,1.2vw,12px) clamp(20px,3vw,32px);
   border-radius: 12px;
-  border: 1px solid rgba(100,255,120,0.75);
-  background: rgba(50,200,80,0.12);
-  color: #7fff8a;
-  font-size: clamp(11px, 1.6vw, 14px);
-  font-weight: 800;
+  border: 2px solid rgba(60,210,90,0.9);
+  background: linear-gradient(135deg, #0a6e22 0%, #1aaa40 40%, #12c438 70%, #0e8f2c 100%);
+  color: #d4ffe0;
+  font-size: clamp(12px, 1.7vw, 15px);
+  font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   cursor: pointer;
   transition: all 0.15s;
   display: none;
   white-space: nowrap;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  box-shadow: 0 4px 18px rgba(20,180,60,0.55), 0 0 28px rgba(30,200,70,0.22);
 }
 #cashoutBtn.show { display: block; }
-#cashoutBtn:hover { background: rgba(50,200,80,0.25); }
+#cashoutBtn:hover {
+  background: linear-gradient(135deg, #0c8228 0%, #20c84a 40%, #16de44 70%, #10a332 100%);
+  box-shadow: 0 4px 26px rgba(20,200,70,0.7), 0 0 38px rgba(40,220,80,0.32);
+  transform: translateX(-50%) translateY(-1px);
+}
 
 /* ── FX LAYER ── */
 #fxLayer { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: hidden; }
@@ -883,11 +889,7 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); b
   <div id="reelWrap">
     <div id="bonusBadge">2× BONUS SPIN</div>
     <div id="reelWindow">
-      <div class="reel-slot"><div class="reel-symbol" id="reelSymbolL"></div></div>
-      <div class="reel-divider"></div>
-      <div class="reel-slot"><div class="reel-symbol" id="reelSymbol"></div></div>
-      <div class="reel-divider"></div>
-      <div class="reel-slot"><div class="reel-symbol" id="reelSymbolR"></div></div>
+      <div class="reel-symbol" id="reelSymbol"></div>
     </div>
   </div>
 
@@ -1311,40 +1313,17 @@ function updateTracker() {
 // ═══════════════════════════════════════════════════════════════
 // REEL ANIMATION
 // ═══════════════════════════════════════════════════════════════
-const DECO_KEYS = ['OUT','WIDE','NOBALL','DOT','ONE','TWO','THREE','FOUR','SIX'];
 function spinThen(ms, outcome, cb) {
-  const $reelL = document.getElementById('reelSymbolL');
-  const $reelR = document.getElementById('reelSymbolR');
-  const spinQ  = '<span style="font-size:clamp(22px,3.2vw,36px);font-weight:900;color:#fff;text-shadow:0 0 18px #fff">?</span>';
-
-  // Spin all 3
-  $reel.className  = 'reel-symbol is-spinning';
-  if ($reelL) { $reelL.className = 'reel-symbol is-spinning'; $reelL.innerHTML = spinQ; }
-  if ($reelR) { $reelR.className = 'reel-symbol is-spinning'; $reelR.innerHTML = spinQ; }
-  $reel.innerHTML  = spinQ;
-
+  $reel.className = 'reel-symbol is-spinning';
+  $reel.innerHTML = '<span style="font-size:clamp(28px,4vw,44px);font-weight:900;color:#fff;text-shadow:0 0 18px #fff">?</span>';
   clearTimeout(spinTimer);
   spinTimer = setTimeout(() => {
-    // Centre reel: actual outcome
     $reel.className = 'reel-symbol is-popping';
-    $reel.innerHTML = SYMBOL_SVG[outcome.id]
-      ? SYMBOL_SVG[outcome.id]
-      : `<span style="color:${outcome.color};text-shadow:0 0 18px ${outcome.color}">${outcome.label}</span>`;
-
-    // Side reels: random decorative symbols (staggered slightly)
-    setTimeout(() => {
-      if ($reelL) {
-        $reelL.className = 'reel-symbol is-popping';
-        $reelL.innerHTML = SYMBOL_SVG[DECO_KEYS[Math.floor(Math.random()*DECO_KEYS.length)]];
-      }
-    }, 80);
-    setTimeout(() => {
-      if ($reelR) {
-        $reelR.className = 'reel-symbol is-popping';
-        $reelR.innerHTML = SYMBOL_SVG[DECO_KEYS[Math.floor(Math.random()*DECO_KEYS.length)]];
-      }
-    }, 160);
-
+    if (SYMBOL_SVG[outcome.id]) {
+      $reel.innerHTML = SYMBOL_SVG[outcome.id];
+    } else {
+      $reel.innerHTML = `<span style="color:${outcome.color};text-shadow:0 0 18px ${outcome.color}">${outcome.label}</span>`;
+    }
     cb();
   }, ms);
 }
@@ -1637,10 +1616,6 @@ function resetGame() {
 
   $reel.className    = 'reel-symbol';
   $reel.innerHTML    = SYMBOL_SVG['BOWL'];
-  const _rL = document.getElementById('reelSymbolL');
-  const _rR = document.getElementById('reelSymbolR');
-  if (_rL) { _rL.className = 'reel-symbol'; _rL.innerHTML = SYMBOL_SVG['BOWL']; }
-  if (_rR) { _rR.className = 'reel-symbol'; _rR.innerHTML = SYMBOL_SVG['BOWL']; }
   $bonus.className   = '';
   $reelWin.className = '';
   $illegal.className = '';
@@ -1739,10 +1714,6 @@ updateDisplay();
 updateTracker();
 $reel.className = 'reel-symbol';
 $reel.innerHTML = SYMBOL_SVG['BOWL'];
-const _iL = document.getElementById('reelSymbolL');
-const _iR = document.getElementById('reelSymbolR');
-if (_iL) { _iL.className = 'reel-symbol'; _iL.innerHTML = SYMBOL_SVG['BOWL']; }
-if (_iR) { _iR.className = 'reel-symbol'; _iR.innerHTML = SYMBOL_SVG['BOWL']; }
 </script>
 </body>
 </html>

@@ -699,6 +699,27 @@ input[type=number]:disabled, #depositBtn:disabled {
 }
 .ov-btn:hover { background: rgba(255,178,58,0.28); }
 
+/* ── CASH OUT CONFIRM OVERLAY BUTTONS ── */
+.co-btn-row {
+  display: flex;
+  gap: clamp(10px, 2vw, 18px);
+  margin-top: 4px;
+}
+.co-confirm-btn {
+  background: linear-gradient(135deg, #0a6e22 0%, #1aaa40 40%, #12c438 70%, #0e8f2c 100%);
+  border-color: rgba(30,200,80,0.8);
+  color: #d4ffe0;
+}
+.co-confirm-btn:hover {
+  background: linear-gradient(135deg, #0c8228 0%, #20c84a 40%, #16de44 70%, #10a332 100%);
+}
+.co-back-btn {
+  background: rgba(255,178,58,0.10);
+  border-color: rgba(255,214,102,0.5);
+  color: #ffeab1;
+}
+.co-back-btn:hover { background: rgba(255,178,58,0.24); }
+
 /* ── ODDS PANEL ── */
 #oddsPanel {
   left: 3%;
@@ -1194,6 +1215,19 @@ input[type=number]:disabled, #depositBtn:disabled {
     </div>
   </div>
 
+  <!-- ── CASH OUT CONFIRM OVERLAY ── -->
+  <div class="overlay hidden" id="cashoutOverlay">
+    <div class="ov-box">
+      <div class="ov-title" id="coTitle">CASH OUT?</div>
+      <div class="ov-sub"   id="coSub">0 runs · Cash out now?</div>
+      <div class="ov-mult"  id="coMult" style="color:#7fff8a;">1.00×</div>
+      <div class="co-btn-row">
+        <button class="ov-btn co-confirm-btn" id="coConfirmBtn">CASH OUT</button>
+        <button class="ov-btn co-back-btn"    id="coBackBtn">KEEP BOWLING</button>
+      </div>
+    </div>
+  </div>
+
 </div><!-- #game -->
 
 <script>
@@ -1519,10 +1553,9 @@ function showCashoutOffer() {
 function hideCashoutOffer() {
   $cashRow.classList.remove('visible');
   $cashout.className = '';
-  // Reset any pending confirm state
-  if (cashoutConfirming) {
-    clearTimeout(cashoutConfirmTimer);
-    cashoutConfirming = false;
+  // Also dismiss cashout confirm overlay if it's open
+  if ($cashoutOverlay && !$cashoutOverlay.classList.contains('hidden')) {
+    $cashoutOverlay.classList.add('hidden');
   }
 }
 
@@ -1691,29 +1724,27 @@ function overComplete() {
 // ═══════════════════════════════════════════════════════════════
 // CASHOUT
 // ═══════════════════════════════════════════════════════════════
-let cashoutConfirming = false;
-let cashoutConfirmTimer = null;
+const $cashoutOverlay = document.getElementById('cashoutOverlay');
+const $coTitle        = document.getElementById('coTitle');
+const $coSub          = document.getElementById('coSub');
+const $coMult         = document.getElementById('coMult');
+const $coConfirmBtn   = document.getElementById('coConfirmBtn');
+const $coBackBtn      = document.getElementById('coBackBtn');
 
 function doCashout() {
   if (phase !== 'awaiting') return;
 
-  if (!cashoutConfirming) {
-    // First click — enter confirm state
-    cashoutConfirming = true;
-    $cashout.textContent = 'CONFIRM?';
-    $cashout.style.background = 'linear-gradient(135deg, #7a0000 0%, #c00020 40%, #e0002a 70%, #a00018 100%)';
-    cashoutConfirmTimer = setTimeout(() => {
-      // Auto-revert after 4 seconds
-      cashoutConfirming = false;
-      $cashout.style.background = '';
-      showCashoutOffer();
-    }, 4000);
-    return;
-  }
+  // Show the confirm overlay populated with current values
+  const mult = runs >= 36 ? 250 : EV(runs, ballsLeft);
+  const win  = parseFloat((bet * mult).toFixed(2));
+  $coTitle.textContent = 'CASH OUT?';
+  $coSub.textContent   = `${runs} run${runs !== 1 ? 's' : ''} scored · Cash out now?`;
+  $coMult.textContent  = `$${win.toFixed(2)}`;
+  $cashoutOverlay.classList.remove('hidden');
+}
 
-  // Second click — execute cashout
-  clearTimeout(cashoutConfirmTimer);
-  cashoutConfirming = false;
+function executeCashout() {
+  $cashoutOverlay.classList.add('hidden');
   phase = 'done';
   hideCashoutOffer();
   document.getElementById('btnRow').style.display = 'none';
@@ -1732,6 +1763,11 @@ function doCashout() {
   $ovMult.style.color   = '#ffd166';
   $overlay.classList.remove('hidden');
 }
+
+$coConfirmBtn.addEventListener('click', executeCashout);
+$coBackBtn.addEventListener('click', () => {
+  $cashoutOverlay.classList.add('hidden');
+});
 
 // ═══════════════════════════════════════════════════════════════
 // BONUS SPIN

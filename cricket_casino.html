@@ -1626,6 +1626,7 @@ let balance     = 1000;
 let bet         = 10;
 let runs        = 0;
 let ballsLeft   = 6;
+let lastOutSymbol = 'WICKET_ALT'; // tracks which out symbol showed last spin
 let ballsUsed   = 0;   // legal balls already bowled
 let bonusMult   = 1;
 // phase: 'idle' | 'spinning' | 'bonus' | 'awaiting' | 'done'
@@ -1715,10 +1716,11 @@ function spinThen(ms, outcome, cb) {
   clearTimeout(spinTimer);
   spinTimer = setTimeout(() => {
     $reel.className = 'reel-symbol is-popping';
-    // OUT outcome shows either stumps (OUT) or batsman walking off (WICKET_ALT) 50/50
+    // OUT outcome shows either batsman (OUT) or stumps (WICKET_ALT) 50/50
     let symbolKey = outcome.id;
     if (outcome.id === 'OUT') {
       symbolKey = Math.random() < 0.5 ? 'OUT' : 'WICKET_ALT';
+      lastOutSymbol = symbolKey; // track which one showed for overlay text
     }
     if (SYMBOL_SVG[symbolKey]) {
       $reel.innerHTML = SYMBOL_SVG[symbolKey];
@@ -1820,11 +1822,12 @@ function triggerOut(isBonus) {
   $reel.style.color = '#ff5b5b';
   shake();
 
-  const msg = isBonus ? 'BONUS WICKET — over ends at 0×!' : 'WICKET! — over ends immediately at 0×!';
+  const outLabel = lastOutSymbol === 'OUT' ? 'OUT!' : 'WICKET!';
+  const msg = isBonus ? `BONUS ${outLabel} — over ends at 0×!` : `${outLabel} — over ends immediately at 0×!`;
   $status.textContent = msg;
 
   setTimeout(() => {
-    $ovTitle.textContent   = isBonus ? 'BONUS OUT!' : 'WICKET!';
+    $ovTitle.textContent   = isBonus ? `BONUS ${outLabel}` : outLabel;
     $ovTitle.className     = 'ov-title red';
     $ovSub.textContent     = `Dismissed for ${runs} runs — you lose your entire bet`;
     $ovMult.textContent    = '0×';

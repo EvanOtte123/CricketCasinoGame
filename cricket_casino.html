@@ -111,9 +111,8 @@ body {
   border-radius: 16px;
   padding: 12px 14px;
   color: #f6f7fb;
-  background: rgba(8,10,12,0.62);
-  border: 1px solid rgba(255,214,102,0.42);
-  backdrop-filter: blur(8px);
+  background: rgba(6,8,12,0.96);
+  border: 1px solid rgba(255,214,102,0.55);
 }
 
 /* ── REEL ── */
@@ -130,8 +129,8 @@ body {
 }
 
 #reelWindow {
-  width: clamp(175px, 26vw, 230px);
-  height: clamp(140px, 19vw, 190px);
+  width: clamp(135px, 19vw, 175px);
+  height: clamp(105px, 14vw, 148px);
   border-radius: 20px;
   border: 2px solid rgba(255,214,102,0.75);
   background: rgba(4,6,10,0.96);
@@ -296,7 +295,7 @@ body {
 #scoreBug {
   left: 0.5%;
   top: 14%;
-  width: min(24%, 222px);
+  width: min(23%, 210px);
   padding: 0;
   overflow: hidden;
 }
@@ -365,90 +364,105 @@ body {
 
 /* ── CONTROLS ── */
 #controls {
-  right: 0.5%;
-  top: 14%;
-  width: min(24%, 222px);
-  padding: 0;
-  overflow: hidden;
-  display: block;
+  bottom: 1.2%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(88%, 530px);
+  padding: 8px 14px;
+  top: auto;
+  right: auto;
 }
-.ctrl-section { padding: 10px 13px; }
+.ctrl-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.ctrl-cell {
+  flex: 1;
+  padding: 0 10px;
+  min-width: 0;
+}
+.ctrl-cell:first-child { padding-left: 2px; }
+.ctrl-cell:last-child  { padding-right: 2px; }
+.ctrl-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255,255,255,0.13);
+  flex-shrink: 0;
+}
+.ctrl-dep-row {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  margin-top: 3px;
+}
 .ctrl-lbl {
-  font-size: clamp(7px, 0.9vw, 9px);
+  font-size: clamp(6px, 0.85vw, 8px);
   text-transform: uppercase;
   letter-spacing: 1.5px;
   color: rgba(255,255,255,0.42);
   font-weight: 800;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 #balDisplay {
-  font-size: clamp(17px, 2.3vw, 21px);
+  font-size: clamp(13px, 1.8vw, 17px);
   font-weight: 900;
   color: #ffeab1;
-  text-shadow: 0 0 14px rgba(255,220,130,0.22);
 }
 
 input[type=number] {
   width: 100%;
-  padding: 8px 10px;
-  border-radius: 8px;
+  padding: 6px 8px;
+  border-radius: 7px;
   border: 1px solid rgba(255,255,255,0.13);
-  background: rgba(4,6,10,0.72);
+  background: rgba(4,6,10,0.85);
   color: #f6f7fb;
-  font-size: clamp(12px, 1.5vw, 14px);
+  font-size: clamp(11px, 1.4vw, 13px);
   font-weight: 700;
 }
-input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); box-shadow: 0 0 8px rgba(255,214,102,0.08); }
+input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); }
 
-/* ── DEPOSIT ── */
-.deposit-divider {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 4px 13px;
-}
-.deposit-line { flex: 1; height: 1px; background: rgba(255,255,255,0.09); }
-.deposit-label {
-  font-size: clamp(7px, 0.85vw, 8px);
-  font-weight: 900;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.28);
-  white-space: nowrap;
-}
-.deposit-section { padding: 8px 13px 13px; }
 #depositBtn {
-  width: 100%;
-  margin-top: 7px;
-  padding: 9px 10px;
-  border-radius: 8px;
+  padding: 6px 9px;
+  border-radius: 7px;
   border: 1px solid rgba(90,190,255,0.45);
-  background: linear-gradient(135deg, rgba(40,110,220,0.16), rgba(60,160,255,0.08));
+  background: linear-gradient(135deg, rgba(40,110,220,0.22), rgba(60,160,255,0.12));
   color: #80ccff;
-  font-size: clamp(9px, 1.15vw, 11px);
+  font-size: clamp(8px, 1vw, 10px);
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   cursor: pointer;
-  transition: background 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.15s;
 }
-#depositBtn:hover { background: linear-gradient(135deg, rgba(40,110,220,0.30), rgba(60,160,255,0.18)); box-shadow: 0 0 14px rgba(80,160,255,0.22); }
+#depositBtn:hover { background: linear-gradient(135deg, rgba(40,110,220,0.36), rgba(60,160,255,0.22)); }
 
+
+/* ── BUTTON ROW (BOWL + CASHOUT side by side) ── */
+#btnRow {
+  position: absolute;
+  left: 50%;
+  bottom: 14%;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
 
 /* ── ACTION BUTTON ── */
 #actionBtn {
-  position: absolute;
-  left: 50%;
-  bottom: 17%;
-  transform: translateX(-50%);
-  z-index: 4;
-  min-width: clamp(160px, 28vw, 240px);
-  padding: clamp(11px,1.8vw,16px) clamp(28px,4vw,44px);
+  position: static;
+  transform: none;
+  min-width: clamp(130px, 22vw, 200px);
+  padding: clamp(10px,1.6vw,14px) clamp(20px,3vw,36px);
   border-radius: 18px;
   border: 2px solid rgba(255,185,35,0.9);
   background: linear-gradient(160deg, #b84400 0%, #e06000 30%, #ff8c00 60%, #e07200 100%);
   color: #fff5d6;
-  font-size: clamp(18px, 2.8vw, 26px);
+  font-size: clamp(16px, 2.4vw, 24px);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 3px;
@@ -457,29 +471,26 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); b
   text-shadow: 0 2px 8px rgba(0,0,0,0.75);
   box-shadow: 0 4px 22px rgba(255,100,0,0.65), 0 0 36px rgba(255,160,0,0.28), inset 0 1px 0 rgba(255,220,100,0.28);
 }
-#actionBtn:hover  {
+#actionBtn:hover {
   background: linear-gradient(160deg, #cc5000 0%, #ff7500 30%, #ff9d00 60%, #f07800 100%);
   box-shadow: 0 4px 32px rgba(255,120,0,0.8), 0 0 52px rgba(255,180,0,0.42), inset 0 1px 0 rgba(255,230,110,0.35);
-  transform: translateX(-50%) translateY(-1px);
+  transform: translateY(-1px);
 }
 #actionBtn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
 
 /* ── CASHOUT BUTTON ── */
 #cashoutBtn {
-  position: absolute;
-  left: 50%;
-  bottom: 10%;
-  transform: translateX(-50%);
-  z-index: 4;
-  padding: clamp(8px,1.2vw,12px) clamp(20px,3vw,32px);
+  position: static;
+  transform: none;
+  padding: clamp(8px,1.1vw,12px) clamp(12px,1.8vw,20px);
   border-radius: 12px;
   border: 2px solid rgba(60,210,90,0.9);
   background: linear-gradient(135deg, #0a6e22 0%, #1aaa40 40%, #12c438 70%, #0e8f2c 100%);
   color: #d4ffe0;
-  font-size: clamp(12px, 1.7vw, 15px);
+  font-size: clamp(10px, 1.4vw, 13px);
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 1.2px;
   cursor: pointer;
   transition: all 0.15s;
   display: none;
@@ -491,7 +502,7 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); b
 #cashoutBtn:hover {
   background: linear-gradient(135deg, #0c8228 0%, #20c84a 40%, #16de44 70%, #10a332 100%);
   box-shadow: 0 4px 26px rgba(20,200,70,0.7), 0 0 38px rgba(40,220,80,0.32);
-  transform: translateX(-50%) translateY(-1px);
+  transform: translateY(-1px);
 }
 
 /* ── FX LAYER ── */
@@ -795,6 +806,98 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); b
 .payout-val { color: #ffeab1; font-weight: 900; }
 .payout-row.current .payout-run { color: #ffd166; }
 .payout-row.current .payout-val { color: #ffd166; }
+
+/* ── MULTIPLIER OVERLAY ── */
+#multOverlay {
+  position: absolute;
+  left: 50%;
+  top: 47%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  text-align: center;
+  pointer-events: none;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+#multOverlay.show-2x,
+#multOverlay.show-3x { display: flex; animation: moEnter 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+@keyframes moEnter {
+  0%   { opacity:0; transform:translate(-50%,-50%) scale(0.65); }
+  100% { opacity:1; transform:translate(-50%,-50%) scale(1); }
+}
+#multOverlay .mo-header {
+  font-size: clamp(10px, 1.5vw, 13px);
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.75);
+  text-shadow: 0 2px 12px rgba(0,0,0,0.98);
+}
+#multOverlay .mo-badge {
+  font-size: clamp(62px, 9.5vw, 96px);
+  font-weight: 900;
+  line-height: 1;
+  animation: moBadgePulse 0.9s ease-in-out infinite;
+}
+#multOverlay.show-2x .mo-badge {
+  color: #ffd166;
+  text-shadow: 0 0 40px rgba(255,209,102,0.95), 0 0 80px rgba(255,209,102,0.45);
+}
+#multOverlay.show-3x .mo-badge {
+  color: #ff8c35;
+  text-shadow: 0 0 40px rgba(255,130,53,0.95), 0 0 80px rgba(255,100,53,0.45);
+}
+#multOverlay .mo-footer {
+  font-size: clamp(8px, 1.1vw, 11px);
+  font-weight: 900;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  text-shadow: 0 2px 10px rgba(0,0,0,0.98);
+}
+@keyframes moBadgePulse {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.07); }
+}
+
+/* ── CASINO MULTIPLIER CALC POP ── */
+.mult-calc-pop {
+  position: absolute;
+  left: 50%;
+  top: 47%;
+  transform: translate(-50%,-50%);
+  z-index: 7;
+  text-align: center;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: multCalcAnim 2.1s ease-out forwards;
+}
+.mult-calc-equation {
+  font-size: clamp(18px, 2.6vw, 26px);
+  font-weight: 900;
+  color: rgba(255,255,255,0.88);
+  text-shadow: 0 2px 14px rgba(0,0,0,0.98);
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+.mult-calc-result {
+  font-size: clamp(42px, 6.5vw, 66px);
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 2px 16px rgba(0,0,0,0.98);
+  letter-spacing: 2px;
+}
+.mult-calc-result.gold { color: #ffd166; text-shadow: 0 0 32px rgba(255,209,102,0.85), 0 2px 16px rgba(0,0,0,0.98); }
+.mult-calc-result.orange { color: #ff8c35; text-shadow: 0 0 32px rgba(255,130,53,0.85), 0 2px 16px rgba(0,0,0,0.98); }
+@keyframes multCalcAnim {
+  0%   { opacity:0; transform:translate(-50%,-42%) scale(0.6); }
+  16%  { opacity:1; transform:translate(-50%,-50%) scale(1.06); }
+  36%  { transform:translate(-50%,-50%) scale(1); }
+  72%  { opacity:1; }
+  100% { opacity:0; transform:translate(-50%,-68%) scale(0.88); }
+}
 </style>
 </head>
 <body>
@@ -882,6 +985,13 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); b
     </div>
   </div>
 
+  <!-- ── MULTIPLIER OVERLAY ── -->
+  <div id="multOverlay">
+    <div class="mo-header" id="moHeader"></div>
+    <div class="mo-badge"  id="moBadge"></div>
+    <div class="mo-footer" id="moFooter">BONUS SPIN</div>
+  </div>
+
   <!-- Illegal ball badge -->
   <div id="illegalBadge"></div>
 
@@ -939,36 +1049,32 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); b
 
   <!-- ── CONTROLS ── -->
   <div class="panel" id="controls">
-    <div class="panel-header">
-      <span class="panel-header-icon">🎯</span>
-      <span class="panel-header-title">Place Your Bet</span>
-    </div>
-    <div class="ctrl-section">
-      <div class="ctrl-lbl">Balance</div>
-      <div id="balDisplay">$1,000.00</div>
-    </div>
-    <div class="panel-divider"></div>
-    <div class="ctrl-section">
-      <div class="ctrl-lbl">Bet Amount</div>
-      <input type="number" id="betInput" value="10" min="0.01" step="1"/>
-    </div>
-    <div class="deposit-divider">
-      <div class="deposit-line"></div>
-      <span class="deposit-label">Deposit</span>
-      <div class="deposit-line"></div>
-    </div>
-    <div class="deposit-section">
-      <div class="ctrl-lbl">Add Funds</div>
-      <input type="number" id="depositInput" value="100" min="1" step="1"/>
-      <button id="depositBtn">+ Add Funds</button>
+    <div class="ctrl-row">
+      <div class="ctrl-cell">
+        <div class="ctrl-lbl">Balance</div>
+        <div id="balDisplay">$1,000.00</div>
+      </div>
+      <div class="ctrl-divider"></div>
+      <div class="ctrl-cell">
+        <div class="ctrl-lbl">Bet Amount</div>
+        <input type="number" id="betInput" value="10" min="0.01" step="1"/>
+      </div>
+      <div class="ctrl-divider"></div>
+      <div class="ctrl-cell">
+        <div class="ctrl-lbl">Add Funds</div>
+        <div class="ctrl-dep-row">
+          <input type="number" id="depositInput" value="100" min="1" step="1"/>
+          <button id="depositBtn">+ADD</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ── ACTION BUTTON ── -->
-  <button id="actionBtn">BOWL</button>
-
-  <!-- ── CASHOUT BUTTON ── -->
-  <button id="cashoutBtn">CASH OUT</button>
+  <!-- ── BUTTON ROW ── -->
+  <div id="btnRow">
+    <button id="actionBtn">BOWL</button>
+    <button id="cashoutBtn">CASH OUT</button>
+  </div>
 
   <!-- ── OVERLAY ── -->
   <div class="overlay hidden" id="overlay">
@@ -1381,12 +1487,41 @@ function runPop(text) {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// MULTIPLIER OVERLAY
+// ═══════════════════════════════════════════════════════════════
+function showMultOverlay(mult, header) {
+  const el = document.getElementById('multOverlay');
+  document.getElementById('moHeader').textContent = header;
+  document.getElementById('moBadge').textContent  = mult + '×';
+  document.getElementById('moFooter').textContent = mult + '× BONUS SPIN';
+  el.className = mult === 2 ? 'show-2x' : 'show-3x';
+}
+function hideMultOverlay() {
+  document.getElementById('multOverlay').className = '';
+}
+function showMultCalc(bonusRuns, mult, gained) {
+  const el = document.createElement('div');
+  el.className = 'mult-calc-pop';
+  const colorClass = mult === 3 ? 'orange' : 'gold';
+  if (bonusRuns === 0) {
+    el.innerHTML = `<div class="mult-calc-equation">DOT — NO BONUS RUNS</div>`;
+  } else {
+    el.innerHTML =
+      `<div class="mult-calc-equation">${bonusRuns} RUN${bonusRuns!==1?'S':''} &times; ${mult}&times;</div>` +
+      `<div class="mult-calc-result ${colorClass}">= ${gained} RUNS!</div>`;
+  }
+  document.getElementById('game').appendChild(el);
+  setTimeout(() => el.remove(), 2200);
+}
+
+// ═══════════════════════════════════════════════════════════════
 // GAME OVER — OUT
 // ═══════════════════════════════════════════════════════════════
 function triggerOut(isBonus) {
   phase = 'done';
   hideCashoutOffer();
-  $action.style.display = 'none';
+  hideMultOverlay();
+  document.getElementById('btnRow').style.display = 'none';
   $reel.style.color = '#ff5b5b';
   shake();
 
@@ -1409,7 +1544,8 @@ function triggerOut(isBonus) {
 function overComplete() {
   phase = 'done';
   hideCashoutOffer();
-  $action.style.display = 'none';
+  hideMultOverlay();
+  document.getElementById('btnRow').style.display = 'none';
 
   const mult = P(runs);
   const win  = parseFloat((bet * mult).toFixed(2));
@@ -1437,7 +1573,7 @@ function doCashout() {
   if (phase !== 'awaiting') return;
   phase = 'done';
   hideCashoutOffer();
-  $action.style.display = 'none';
+  document.getElementById('btnRow').style.display = 'none';
 
   const mult = runs >= 36 ? 250 : EV(runs, ballsLeft);
   const win  = parseFloat((bet * mult).toFixed(2));
@@ -1468,12 +1604,16 @@ function doBonusSpin() {
   $bonus.className   = mult === 2 ? 'show-2x' : 'show-3x';
   $reelWin.className = mult === 2 ? 'bonus-wide' : 'bonus-noball';
 
+  // Keep multiplier overlay visible during spin, update footer
+  document.getElementById('moFooter').textContent = mult + '× BONUS SPIN — SPINNING...';
+
   $status.textContent = mult + '× Bonus spin — bowling...';
 
   const result = roll(BONUS);
   spinThen(950, result, () => {
     $bonus.className   = '';
     $reelWin.className = '';
+    hideMultOverlay();
 
     if (result.id === 'OUT') {
       triggerOut(true);
@@ -1489,21 +1629,25 @@ function doBonusSpin() {
     updateDisplay();
     updateTracker();
 
+    // Casino-style multiplier calculation popup
+    showMultCalc(result.runs, mult, gained);
+
     if (gained > 0) {
-      sparkles(gained >= 4 ? 18 : 10);
-      runPop('+' + gained);
-      $status.textContent = `${result.id === 'DOT' ? 'Dot' : result.runs + ' run' + (result.runs !== 1 ? 's' : '')} × ${mult}× = +${gained} runs`;
+      sparkles(gained >= 6 ? 22 : gained >= 4 ? 18 : 10);
+      $status.textContent = `${result.runs} run${result.runs!==1?'s':''} × ${mult}× = +${gained} runs`;
     } else {
-      $status.textContent = 'Dot ball on bonus — no runs';
+      $status.textContent = 'Dot ball on bonus — no runs scored';
     }
 
-    if (runs >= 36) { setTimeout(overComplete, 1200); return; }
-    if (ballsLeft <= 0) { setTimeout(overComplete, 1200); return; }
+    if (runs >= 36) { setTimeout(overComplete, 1400); return; }
+    if (ballsLeft <= 0) { setTimeout(overComplete, 1400); return; }
 
-    phase = 'awaiting';
-    $action.disabled    = false;
-    $action.textContent = 'BOWL';
-    showCashoutOffer();
+    setTimeout(() => {
+      phase = 'awaiting';
+      $action.disabled    = false;
+      $action.textContent = 'BOWL';
+      showCashoutOffer();
+    }, 800);
   });
 }
 
@@ -1548,11 +1692,12 @@ function doMainSpin() {
       runs += 1;
       bonusMult = 2;
       $illegal.className = 'wide';
-      $illegal.textContent = 'WIDE  +1 run  →  2× bonus spin';
+      $illegal.textContent = 'WIDE  +1 RUN';
       $status.textContent = 'Wide! +1 run — 2× bonus spin incoming...';
       updateDisplay();
       runPop('+1');
-      setTimeout(doBonusSpin, 1300);
+      showMultOverlay(2, 'WIDE  •  +1 RUN');
+      setTimeout(doBonusSpin, 1500);
       return;
     }
 
@@ -1561,11 +1706,12 @@ function doMainSpin() {
       runs += 1;
       bonusMult = 3;
       $illegal.className = 'noball';
-      $illegal.textContent = 'NO BALL  +1 run  →  3× bonus spin';
+      $illegal.textContent = 'NO BALL  +1 RUN';
       $status.textContent = 'No Ball! +1 run — 3× bonus spin incoming...';
       updateDisplay();
       runPop('+1');
-      setTimeout(doBonusSpin, 1300);
+      showMultOverlay(3, 'NO BALL  •  +1 RUN');
+      setTimeout(doBonusSpin, 1500);
       return;
     }
 
@@ -1620,10 +1766,11 @@ function resetGame() {
   $reelWin.className = '';
   $illegal.className = '';
 
-  $action.style.display = '';
+  document.getElementById('btnRow').style.display = '';
   $action.disabled      = false;
   $action.textContent   = 'BOWL';
   $overlay.classList.add('hidden');
+  hideMultOverlay();
   hideCashoutOffer();
 
   for (let i = 0; i < 6; i++) document.getElementById(`bd${i}`).className = 'bd';

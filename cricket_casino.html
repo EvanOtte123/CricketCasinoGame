@@ -233,7 +233,7 @@ body {
 /* ── BALL TRACKER ── */
 #ballTracker {
   position: absolute;
-  bottom: 33%;
+  bottom: 38%;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -258,7 +258,7 @@ body {
 #statusText {
   position: absolute;
   left: 50%;
-  bottom: 27%;
+  bottom: 32%;
   transform: translateX(-50%);
   z-index: 3;
   font-size: clamp(11px, 1.6vw, 14px);
@@ -364,7 +364,7 @@ body {
 
 /* ── CONTROLS ── */
 #controls {
-  bottom: 1.2%;
+  bottom: 3.5%;
   left: 50%;
   transform: translateX(-50%);
   width: min(88%, 530px);
@@ -405,7 +405,7 @@ body {
   margin-bottom: 3px;
 }
 #balDisplay {
-  font-size: clamp(13px, 1.8vw, 17px);
+  font-size: clamp(17px, 2.4vw, 24px);
   font-weight: 900;
   color: #ffeab1;
 }
@@ -417,7 +417,7 @@ input[type=number] {
   border: 1px solid rgba(255,255,255,0.13);
   background: rgba(4,6,10,0.85);
   color: #f6f7fb;
-  font-size: clamp(11px, 1.4vw, 13px);
+  font-size: clamp(14px, 1.8vw, 17px);
   font-weight: 700;
 }
 input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); }
@@ -440,29 +440,28 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); }
 #depositBtn:hover { background: linear-gradient(135deg, rgba(40,110,220,0.36), rgba(60,160,255,0.22)); }
 
 
-/* ── BUTTON ROW (BOWL + CASHOUT side by side) ── */
+/* ── BUTTON ROW (invisible overlay — hides both buttons when display:none) ── */
 #btnRow {
   position: absolute;
-  left: 50%;
-  bottom: 14%;
-  transform: translateX(-50%);
+  inset: 0;
   z-index: 4;
-  display: flex;
-  gap: 8px;
-  align-items: center;
+  pointer-events: none;
 }
 
 /* ── ACTION BUTTON ── */
 #actionBtn {
-  position: static;
-  transform: none;
-  min-width: clamp(130px, 22vw, 200px);
-  padding: clamp(10px,1.6vw,14px) clamp(20px,3vw,36px);
+  position: absolute;
+  left: 50%;
+  bottom: 19%;
+  transform: translateX(-50%);
+  pointer-events: auto;
+  min-width: clamp(145px, 24vw, 220px);
+  padding: clamp(12px,1.8vw,16px) clamp(22px,3.2vw,40px);
   border-radius: 18px;
   border: 2px solid rgba(255,185,35,0.9);
   background: linear-gradient(160deg, #b84400 0%, #e06000 30%, #ff8c00 60%, #e07200 100%);
   color: #fff5d6;
-  font-size: clamp(16px, 2.4vw, 24px);
+  font-size: clamp(18px, 2.6vw, 26px);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 3px;
@@ -474,36 +473,44 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); }
 #actionBtn:hover {
   background: linear-gradient(160deg, #cc5000 0%, #ff7500 30%, #ff9d00 60%, #f07800 100%);
   box-shadow: 0 4px 32px rgba(255,120,0,0.8), 0 0 52px rgba(255,180,0,0.42), inset 0 1px 0 rgba(255,230,110,0.35);
-  transform: translateY(-1px);
+  transform: translateX(-50%) translateY(-1px);
 }
 #actionBtn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
 
 /* ── CASHOUT BUTTON ── */
 #cashoutBtn {
-  position: static;
+  position: absolute;
+  left: calc(50% + 120px);
+  bottom: 19%;
   transform: none;
-  padding: clamp(8px,1.1vw,12px) clamp(12px,1.8vw,20px);
+  pointer-events: auto;
+  width: clamp(68px, 9vw, 88px);
+  height: clamp(52px, 7vw, 68px);
+  padding: 4px 6px;
   border-radius: 12px;
   border: 2px solid rgba(60,210,90,0.9);
   background: linear-gradient(135deg, #0a6e22 0%, #1aaa40 40%, #12c438 70%, #0e8f2c 100%);
   color: #d4ffe0;
-  font-size: clamp(10px, 1.4vw, 13px);
+  font-size: clamp(8px, 1.1vw, 11px);
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 1.2px;
+  letter-spacing: 1px;
+  line-height: 1.2;
   cursor: pointer;
   transition: all 0.15s;
   display: none;
-  white-space: nowrap;
+  text-align: center;
   text-shadow: 0 2px 6px rgba(0,0,0,0.6);
   box-shadow: 0 4px 18px rgba(20,180,60,0.55), 0 0 28px rgba(30,200,70,0.22);
 }
-#cashoutBtn.show { display: block; }
+#cashoutBtn.show { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 #cashoutBtn:hover {
   background: linear-gradient(135deg, #0c8228 0%, #20c84a 40%, #16de44 70%, #10a332 100%);
   box-shadow: 0 4px 26px rgba(20,200,70,0.7), 0 0 38px rgba(40,220,80,0.32);
   transform: translateY(-1px);
 }
+#cashoutBtn .co-label { font-size: clamp(7px, 0.95vw, 9px); letter-spacing: 1px; opacity: 0.85; }
+#cashoutBtn .co-mult  { font-size: clamp(12px, 1.7vw, 17px); font-weight: 900; color: #7fff8a; }
 
 /* ── FX LAYER ── */
 #fxLayer { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: hidden; }
@@ -611,7 +618,8 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); }
 /* ── SETTINGS BUTTON ── */
 #settingsBtn {
   position: absolute;
-  left: 2%;
+  right: 2%;
+  left: auto;
   top: 2%;
   z-index: 5;
   width: clamp(34px, 4.5vw, 44px);
@@ -1396,7 +1404,7 @@ function showCashoutOffer() {
   $cashRow.classList.add('visible');
   $evD.textContent = ev.toFixed(2) + '×';
   $cashout.className = 'show';
-  $cashout.textContent = `CASH OUT  ${ev.toFixed(2)}×`;
+  $cashout.innerHTML = `<span class="co-label">CASH OUT</span><span class="co-mult">${ev.toFixed(2)}×</span>`;
 }
 
 function hideCashoutOffer() {

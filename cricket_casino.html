@@ -118,7 +118,7 @@ body {
 /* ── REEL ── */
 #reelWrap {
   position: absolute;
-  top: 29%;
+  top: 24%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 3;
@@ -129,8 +129,8 @@ body {
 }
 
 #reelWindow {
-  width: clamp(108px, 15vw, 138px);
-  height: clamp(82px, 11vw, 112px);
+  width: clamp(90px, 12vw, 115px);
+  height: clamp(68px, 9vw, 92px);
   border-radius: 20px;
   border: 2px solid rgba(255,214,102,0.75);
   background: rgba(4,6,10,0.96);
@@ -230,16 +230,23 @@ body {
 #illegalBadge.wide  { display: block; background: rgba(255,209,102,0.2); border: 1px solid #ffd166; color: #ffd166; }
 #illegalBadge.noball { display: block; background: rgba(255,107,53,0.2);  border: 1px solid #ff6b35; color: #ff6b35; }
 
+/* ── TRACKER GROUP (dots + status, grouped above BOWL btn) ── */
+#trackerGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+
 /* ── BALL TRACKER ── */
 #ballTracker {
-  position: absolute;
-  top: 42%;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   gap: clamp(6px, 1vw, 10px);
   z-index: 3;
   align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .bd {
@@ -256,10 +263,6 @@ body {
 
 /* ── STATUS TEXT ── */
 #statusText {
-  position: absolute;
-  left: 50%;
-  top: 47%;
-  transform: translateX(-50%);
   z-index: 3;
   font-size: clamp(11px, 1.6vw, 14px);
   font-weight: 700;
@@ -268,6 +271,7 @@ body {
   white-space: nowrap;
   text-align: center;
   pointer-events: none;
+  width: 100%;
 }
 
 /* ── PANEL SHARED HEADER / STRUCTURE ── */
@@ -1100,18 +1104,6 @@ input[type=number]:disabled, #depositBtn:disabled {
     </div>
   </div>
 
-  <!-- Ball tracker -->
-  <div id="ballTracker">
-    <div class="bd" id="bd0"></div>
-    <div class="bd" id="bd1"></div>
-    <div class="bd" id="bd2"></div>
-    <div class="bd" id="bd3"></div>
-    <div class="bd" id="bd4"></div>
-    <div class="bd" id="bd5"></div>
-  </div>
-
-  <!-- Status text -->
-  <div id="statusText">Place your bet and bowl the first ball!</div>
 
   <!-- ── SCORE BUG ── -->
   <div class="panel" id="scoreBug">
@@ -1149,8 +1141,20 @@ input[type=number]:disabled, #depositBtn:disabled {
 
   <!-- ── BOTTOM SECTION (BOWL + CONTROLS stacked) ── -->
   <div id="bottomSection">
+    <!-- Ball tracker + status grouped above buttons -->
+    <div id="trackerGroup">
+      <div id="ballTracker">
+        <div class="bd" id="bd0"></div>
+        <div class="bd" id="bd1"></div>
+        <div class="bd" id="bd2"></div>
+        <div class="bd" id="bd3"></div>
+        <div class="bd" id="bd4"></div>
+        <div class="bd" id="bd5"></div>
+      </div>
+      <div id="statusText">Place your bet and bowl the first ball!</div>
+    </div>
     <div id="btnRow">
-      <button id="actionBtn">BOWL</button>
+      <button id="actionBtn">PLAY</button>
       <button id="cashoutBtn">CASH OUT</button>
     </div>
     <div class="panel" id="controls">
@@ -1515,6 +1519,11 @@ function showCashoutOffer() {
 function hideCashoutOffer() {
   $cashRow.classList.remove('visible');
   $cashout.className = '';
+  // Reset any pending confirm state
+  if (cashoutConfirming) {
+    clearTimeout(cashoutConfirmTimer);
+    cashoutConfirming = false;
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1682,8 +1691,29 @@ function overComplete() {
 // ═══════════════════════════════════════════════════════════════
 // CASHOUT
 // ═══════════════════════════════════════════════════════════════
+let cashoutConfirming = false;
+let cashoutConfirmTimer = null;
+
 function doCashout() {
   if (phase !== 'awaiting') return;
+
+  if (!cashoutConfirming) {
+    // First click — enter confirm state
+    cashoutConfirming = true;
+    $cashout.textContent = 'CONFIRM?';
+    $cashout.style.background = 'linear-gradient(135deg, #7a0000 0%, #c00020 40%, #e0002a 70%, #a00018 100%)';
+    cashoutConfirmTimer = setTimeout(() => {
+      // Auto-revert after 4 seconds
+      cashoutConfirming = false;
+      $cashout.style.background = '';
+      showCashoutOffer();
+    }, 4000);
+    return;
+  }
+
+  // Second click — execute cashout
+  clearTimeout(cashoutConfirmTimer);
+  cashoutConfirming = false;
   phase = 'done';
   hideCashoutOffer();
   document.getElementById('btnRow').style.display = 'none';
@@ -1771,8 +1801,13 @@ function doMainSpin() {
   if (phase !== 'idle' && phase !== 'awaiting') return;
 
   const b = parseFloat($betIn.value) || 0;
-  if (b <= 0 || b > balance) {
-    $status.textContent = b <= 0 ? 'Enter a valid bet!' : 'Insufficient balance!';
+  if (b <= 0) {
+    $status.textContent = 'Enter a valid bet!';
+    return;
+  }
+  // Only check balance on the very first bowl of a new over
+  if (phase === 'idle' && b > balance) {
+    $status.textContent = 'Insufficient balance!';
     return;
   }
   bet = b;
@@ -1782,6 +1817,7 @@ function doMainSpin() {
     balance = parseFloat((balance - bet).toFixed(2));
     updateDisplay();
     setControlsLocked(true);
+    $action.textContent = 'BOWL';
   }
 
   phase = 'spinning';
@@ -1882,7 +1918,7 @@ function resetGame() {
 
   document.getElementById('btnRow').style.display = '';
   $action.disabled      = false;
-  $action.textContent   = 'BOWL';
+  $action.textContent   = 'PLAY';
   $overlay.classList.add('hidden');
   hideMultOverlay();
   hideCashoutOffer();

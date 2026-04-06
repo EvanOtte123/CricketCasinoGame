@@ -1225,7 +1225,7 @@ input[type=number]:disabled, #depositBtn:disabled {
       <div id="statusText">Place your bet and bowl the first ball!</div>
     </div>
     <div id="btnRow">
-      <button id="actionBtn">BOWL</button>
+      <button id="actionBtn">PLAY</button>
       <button id="cashoutBtn">CASH OUT</button>
     </div>
     <div class="panel" id="controls">
@@ -2012,25 +2012,22 @@ function doBonusSpin() {
 function doMainSpin() {
   if (phase !== 'idle' && phase !== 'awaiting') return;
 
-  const b = parseFloat($betIn.value) || 0;
-  if (b <= 0) {
-    $status.textContent = 'Enter a valid bet!';
-    return;
-  }
-  // Only check balance on the very first bowl of a new over
-  if (phase === 'idle' && b > balance) {
-    $status.textContent = 'Insufficient balance!';
-    return;
-  }
-  bet = b;
-
-  // Deduct bet only at game start
+  // ── PLAY clicked: start the over, deduct bet, switch button to BOWL ──
   if (phase === 'idle') {
+    const b = parseFloat($betIn.value) || 0;
+    if (b <= 0) { $status.textContent = 'Enter a valid bet!'; return; }
+    if (b > balance) { $status.textContent = 'Insufficient balance!'; return; }
+    bet = b;
     balance = parseFloat((balance - bet).toFixed(2));
     updateDisplay();
     setControlsLocked(true);
+    phase = 'awaiting';
+    $action.textContent = 'BOWL';
+    $status.textContent = 'Over started — click BOWL to bowl!';
+    return;
   }
 
+  // ── BOWL clicked: actually bowl the ball ──
   phase = 'spinning';
   $action.disabled = true;
   hideCashoutOffer();
@@ -2133,7 +2130,7 @@ function resetGame() {
 
   document.getElementById('btnRow').style.display = '';
   $action.disabled      = false;
-  $action.textContent   = 'BOWL';
+  $action.textContent   = 'PLAY';
   $overlay.classList.add('hidden');
   hideMultOverlay();
   hideCashoutOffer();

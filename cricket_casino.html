@@ -1225,7 +1225,7 @@ input[type=number]:disabled, #depositBtn:disabled {
       <div id="statusText">Place your bet and bowl the first ball!</div>
     </div>
     <div id="btnRow">
-      <button id="actionBtn">PLAY</button>
+      <button id="actionBtn">BOWL</button>
       <button id="cashoutBtn">CASH OUT</button>
     </div>
     <div class="panel" id="controls">
@@ -2029,7 +2029,6 @@ function doMainSpin() {
     balance = parseFloat((balance - bet).toFixed(2));
     updateDisplay();
     setControlsLocked(true);
-    $action.textContent = 'BOWL';
   }
 
   phase = 'spinning';
@@ -2134,7 +2133,7 @@ function resetGame() {
 
   document.getElementById('btnRow').style.display = '';
   $action.disabled      = false;
-  $action.textContent   = 'PLAY';
+  $action.textContent   = 'BOWL';
   $overlay.classList.add('hidden');
   hideMultOverlay();
   hideCashoutOffer();

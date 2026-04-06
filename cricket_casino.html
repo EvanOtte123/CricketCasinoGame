@@ -1717,14 +1717,14 @@ function updateTracker() {
 // ═══════════════════════════════════════════════════════════════
 // REEL ANIMATION
 // ═══════════════════════════════════════════════════════════════
-let spinTimers = [null, null, null];
-function spinThen(ms, outcome, cb) {
-  $reels.forEach(r => {
-    r.className = 'reel-symbol is-spinning';
-    r.innerHTML = '<span style="font-size:clamp(20px,3vw,32px);font-weight:900;color:#fff;text-shadow:0 0 18px #fff">?</span>';
-  });
+// Symbols that cycle through during the spin rumble
+const SPIN_CYCLE_KEYS = ['DOT','ONE','TWO','THREE','FOUR','SIX','OUT','WICKET_ALT','WIDE','NOBALL'];
 
-  // Resolve symbol key once so all 3 reels show the same outcome
+let spinTimers    = [null, null, null];
+let cycleIntervals = [null, null, null];
+
+function spinThen(ms, outcome, cb) {
+  // Resolve symbol once so all 3 reels land on the same outcome
   let symbolKey = outcome.id;
   if (outcome.id === 'OUT') {
     symbolKey = Math.random() < 0.5 ? 'OUT' : 'WICKET_ALT';
@@ -1734,10 +1734,25 @@ function spinThen(ms, outcome, cb) {
     ? SYMBOL_SVG[symbolKey]
     : `<span style="color:${outcome.color};text-shadow:0 0 18px ${outcome.color}">${outcome.label}</span>`;
 
+  // Start each reel cycling through symbols at a fast rate
+  $reels.forEach((r, i) => {
+    clearInterval(cycleIntervals[i]);
+    r.className = 'reel-symbol is-spinning';
+    let idx = i * 3; // stagger starting point so reels show different symbols
+    r.innerHTML = SYMBOL_SVG[SPIN_CYCLE_KEYS[idx % SPIN_CYCLE_KEYS.length]];
+    cycleIntervals[i] = setInterval(() => {
+      idx = (idx + 1) % SPIN_CYCLE_KEYS.length;
+      r.innerHTML = SYMBOL_SVG[SPIN_CYCLE_KEYS[idx]];
+    }, 85);
+  });
+
+  // Stagger each reel landing: reel 0 first, then 1, then 2
   const stagger = 130;
   spinTimers.forEach((_, i) => {
     clearTimeout(spinTimers[i]);
     spinTimers[i] = setTimeout(() => {
+      clearInterval(cycleIntervals[i]);
+      cycleIntervals[i] = null;
       $reels[i].className = 'reel-symbol is-popping';
       $reels[i].innerHTML = symbolHTML;
       if (i === 2) cb();
@@ -2106,6 +2121,10 @@ function resetGame() {
   ballsUsed = 0;
   bonusMult = 1;
   phase     = 'idle';
+
+  // Clear any running cycle intervals / spin timers
+  cycleIntervals.forEach((id, i) => { clearInterval(id); cycleIntervals[i] = null; });
+  spinTimers.forEach((id, i)     => { clearTimeout(id);  spinTimers[i]     = null; });
 
   $reels.forEach(r => r.className = 'reel-symbol');
   $reels.forEach(r => r.innerHTML = SYMBOL_SVG['BOWL']);

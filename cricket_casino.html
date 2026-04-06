@@ -129,8 +129,8 @@ body {
 }
 
 #reelWindow {
-  width: clamp(135px, 19vw, 175px);
-  height: clamp(105px, 14vw, 148px);
+  width: clamp(108px, 15vw, 138px);
+  height: clamp(82px, 11vw, 112px);
   border-radius: 20px;
   border: 2px solid rgba(255,214,102,0.75);
   background: rgba(4,6,10,0.96);
@@ -295,140 +295,218 @@ body {
 #scoreBug {
   left: 0.5%;
   top: 14%;
-  width: min(23%, 210px);
+  width: min(24%, 220px);
   padding: 0;
   overflow: hidden;
+  border: 1px solid rgba(255,214,102,0.45) !important;
+  box-shadow: 0 0 28px rgba(255,178,58,0.18), inset 0 0 18px rgba(255,214,102,0.04);
+}
+
+/* Top runs hero block */
+.sb-hero {
+  background: linear-gradient(160deg, rgba(255,178,58,0.13) 0%, rgba(255,120,0,0.07) 100%);
+  border-bottom: 1px solid rgba(255,214,102,0.22);
+  padding: 10px 13px 8px;
+  position: relative;
+  overflow: hidden;
+}
+.sb-hero::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  left: -20%;
+  width: 140%;
+  height: 200%;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,214,102,0.09) 0%, transparent 65%);
+  pointer-events: none;
 }
 .sb-runs-lbl {
-  font-size: clamp(7px, 0.9vw, 9px);
+  font-size: clamp(6px, 0.82vw, 8px);
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: rgba(255,255,255,0.42);
-  font-weight: 800;
-  margin-bottom: 1px;
+  letter-spacing: 2px;
+  color: rgba(255,214,102,0.55);
+  font-weight: 900;
+  margin-bottom: 0;
 }
 .sb-runs-val {
-  font-size: clamp(40px, 5.8vw, 54px);
+  font-size: clamp(46px, 6.6vw, 62px);
   font-weight: 900;
-  color: #ffeab1;
   line-height: 1;
-  text-shadow: 0 0 22px rgba(255,220,130,0.28);
-  margin-bottom: 9px;
+  background: linear-gradient(180deg, #ffffff 0%, #fff3a0 30%, #ffd166 65%, #ff9500 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 14px rgba(255,178,58,0.75));
+  margin-bottom: 0;
 }
+.sb-runs-suffix {
+  font-size: clamp(9px, 1.2vw, 12px);
+  font-weight: 900;
+  color: rgba(255,214,102,0.6);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: -2px;
+}
+
+/* Stats grid */
 .sb-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 7px;
+  gap: 0;
 }
 .sb-cell {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 9px;
-  padding: 7px 8px;
+  padding: 8px 10px;
+  position: relative;
+}
+.sb-cell:first-child {
+  border-right: 1px solid rgba(255,255,255,0.08);
 }
 .sb-cell-lbl {
-  font-size: clamp(6px, 0.82vw, 8px);
+  font-size: clamp(5px, 0.72vw, 7px);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  color: rgba(255,255,255,0.4);
-  font-weight: 800;
-  margin-bottom: 2px;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.38);
+  font-weight: 900;
+  margin-bottom: 3px;
 }
 .sb-cell-val {
-  font-size: clamp(13px, 1.8vw, 17px);
+  font-size: clamp(16px, 2.2vw, 21px);
   font-weight: 900;
-  color: #ffeab1;
 }
+.sb-cell-val.val-balls {
+  color: #60d0ff;
+  text-shadow: 0 0 16px rgba(80,200,255,0.55);
+}
+.sb-cell-val.val-payout {
+  color: #ffd166;
+  text-shadow: 0 0 16px rgba(255,209,102,0.55);
+}
+
+/* Cashout value */
 .sb-cashout-box {
   display: none;
-  margin-top: 9px;
-  background: rgba(60,220,90,0.06);
-  border: 1px solid rgba(100,255,130,0.22);
-  border-radius: 9px;
-  padding: 8px 10px;
+  margin: 0;
+  background: linear-gradient(135deg, rgba(20,200,80,0.12), rgba(40,255,100,0.06));
+  border-top: 1px solid rgba(60,220,90,0.3);
+  padding: 8px 12px;
+  position: relative;
+  overflow: hidden;
+}
+.sb-cashout-box::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(60,220,90,0.12) 0%, transparent 70%);
+  pointer-events: none;
 }
 .sb-cashout-box.visible { display: block; }
 .sb-cashout-lbl {
-  font-size: clamp(6px, 0.82vw, 8px);
+  font-size: clamp(5px, 0.72vw, 7px);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   color: rgba(120,255,150,0.65);
-  font-weight: 800;
+  font-weight: 900;
   margin-bottom: 2px;
 }
 .sb-cashout-val {
-  font-size: clamp(14px, 1.9vw, 18px);
+  font-size: clamp(16px, 2.2vw, 21px);
   font-weight: 900;
   color: #7fff8a;
+  text-shadow: 0 0 18px rgba(80,255,120,0.6);
 }
 
 /* ── CONTROLS ── */
 #controls {
-  bottom: 3.5%;
+  bottom: 2%;
   left: 50%;
   transform: translateX(-50%);
-  width: min(88%, 530px);
-  padding: 8px 14px;
+  width: min(92%, 700px);
+  padding: 0;
   top: auto;
   right: auto;
+  border: 1px solid rgba(255,214,102,0.35) !important;
+  box-shadow: 0 0 24px rgba(255,178,58,0.12);
+  overflow: hidden;
+}
+.ctrl-header {
+  background: linear-gradient(135deg, rgba(255,214,102,0.10), rgba(255,178,58,0.04));
+  border-bottom: 1px solid rgba(255,214,102,0.18);
+  padding: 6px 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ctrl-header-title {
+  font-size: clamp(7px, 0.9vw, 9px);
+  font-weight: 900;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,214,102,0.75);
 }
 .ctrl-row {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 0;
+  padding: 12px 16px;
 }
 .ctrl-cell {
   flex: 1;
-  padding: 0 10px;
+  padding: 0 14px;
   min-width: 0;
 }
-.ctrl-cell:first-child { padding-left: 2px; }
-.ctrl-cell:last-child  { padding-right: 2px; }
+.ctrl-cell:first-child { padding-left: 4px; }
+.ctrl-cell:last-child  { padding-right: 4px; }
 .ctrl-divider {
   width: 1px;
-  height: 36px;
-  background: rgba(255,255,255,0.13);
+  background: rgba(255,255,255,0.10);
   flex-shrink: 0;
+  align-self: stretch;
 }
 .ctrl-dep-row {
   display: flex;
-  gap: 5px;
+  gap: 6px;
   align-items: center;
-  margin-top: 3px;
+  margin-top: 5px;
 }
 .ctrl-lbl {
-  font-size: clamp(6px, 0.85vw, 8px);
+  font-size: clamp(7px, 0.9vw, 9px);
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: rgba(255,255,255,0.42);
-  font-weight: 800;
-  margin-bottom: 3px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.4);
+  font-weight: 900;
+  margin-bottom: 5px;
 }
 #balDisplay {
-  font-size: clamp(17px, 2.4vw, 24px);
+  font-size: clamp(20px, 2.8vw, 28px);
   font-weight: 900;
   color: #ffeab1;
+  text-shadow: 0 0 18px rgba(255,214,102,0.35);
 }
 
 input[type=number] {
   width: 100%;
-  padding: 6px 8px;
-  border-radius: 7px;
+  padding: 8px 10px;
+  border-radius: 8px;
   border: 1px solid rgba(255,255,255,0.13);
   background: rgba(4,6,10,0.85);
   color: #f6f7fb;
-  font-size: clamp(14px, 1.8vw, 17px);
+  font-size: clamp(15px, 2vw, 19px);
   font-weight: 700;
 }
 input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); }
+input[type=number]:disabled, #depositBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
 #depositBtn {
-  padding: 6px 9px;
-  border-radius: 7px;
+  padding: 8px 12px;
+  border-radius: 8px;
   border: 1px solid rgba(90,190,255,0.45);
   background: linear-gradient(135deg, rgba(40,110,220,0.22), rgba(60,160,255,0.12));
   color: #80ccff;
-  font-size: clamp(8px, 1vw, 10px);
+  font-size: clamp(9px, 1.1vw, 11px);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1030,23 +1108,26 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); }
       <span class="panel-header-icon">🏏</span>
       <span class="panel-header-title">Scorecard</span>
     </div>
-    <div class="panel-body">
+    <div class="sb-hero">
       <div class="sb-runs-lbl">Current Runs</div>
       <div class="sb-runs-val" id="runsDisp">0</div>
-      <div class="sb-grid">
-        <div class="sb-cell">
-          <div class="sb-cell-lbl">Balls Left</div>
-          <div class="sb-cell-val" id="ballsDisp">6</div>
-        </div>
-        <div class="sb-cell">
-          <div class="sb-cell-lbl">Payout</div>
-          <div class="sb-cell-val" id="payoutDisp">0.35×</div>
-        </div>
+      <div class="sb-runs-suffix">runs scored</div>
+    </div>
+    <div class="sb-grid">
+      <div class="sb-cell">
+        <div class="sb-cell-lbl">Balls Left</div>
+        <div class="sb-cell-val val-balls" id="ballsDisp">6</div>
       </div>
-      <div class="sb-cashout-box" id="cashoutRow">
-        <div class="sb-cashout-lbl">💰 Cash Out Value</div>
-        <div class="sb-cashout-val" id="evDisp">—</div>
+      <div class="sb-cell">
+        <div class="sb-cell-lbl">Payout</div>
+        <div class="sb-cell-val val-payout" id="payoutDisp">0.35×</div>
       </div>
+    </div>
+    <div class="sb-cashout-box" id="cashoutRow">
+      <div class="sb-cashout-lbl">💰 Cash Out Value</div>
+      <div class="sb-cashout-val" id="evDisp">—</div>
+    </div>
+    <div class="panel-body" style="padding-top:6px;">
       <button class="payout-toggle" id="payoutToggle">
         <span>📊 Payout Table</span>
         <em class="payout-arrow" id="payoutArrow">▼</em>
@@ -1057,6 +1138,10 @@ input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); }
 
   <!-- ── CONTROLS ── -->
   <div class="panel" id="controls">
+    <div class="ctrl-header">
+      <span style="font-size:11px">💰</span>
+      <span class="ctrl-header-title">Place Your Bet</span>
+    </div>
     <div class="ctrl-row">
       <div class="ctrl-cell">
         <div class="ctrl-lbl">Balance</div>
@@ -1399,6 +1484,15 @@ function updateDisplay() {
   if (typeof updatePayoutHighlight === 'function') updatePayoutHighlight();
 }
 
+function setControlsLocked(locked) {
+  const betIn  = document.getElementById('betInput');
+  const depIn  = document.getElementById('depositInput');
+  const depBtn = document.getElementById('depositBtn');
+  betIn.disabled  = locked;
+  depIn.disabled  = locked;
+  depBtn.disabled = locked;
+}
+
 function showCashoutOffer() {
   const ev = runs >= 36 ? 250 : EV(runs, ballsLeft);
   $cashRow.classList.add('visible');
@@ -1676,6 +1770,7 @@ function doMainSpin() {
   if (phase === 'idle') {
     balance = parseFloat((balance - bet).toFixed(2));
     updateDisplay();
+    setControlsLocked(true);
   }
 
   phase = 'spinning';
@@ -1783,6 +1878,7 @@ function resetGame() {
 
   for (let i = 0; i < 6; i++) document.getElementById(`bd${i}`).className = 'bd';
 
+  setControlsLocked(false);
   updateDisplay();
   $status.textContent = 'Place your bet and bowl the first ball!';
 }

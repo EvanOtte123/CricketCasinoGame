@@ -1688,33 +1688,47 @@ function getAudioCtx() {
   return _audioCtx;
 }
 
-// Slot-machine ratchet click — rapid ticks that play for the spin duration
+// Soft card shuffle — quiet noise bursts with slight pitch variation
 let _spinClickTimers = [];
 function startSpinSound() {
   if (_soundMuted) return;
   try {
     stopSpinSound();
     const ctx = getAudioCtx();
-    // Schedule rapid click ticks for ~800ms (covers the spin window)
-    const tickInterval = 0.072; // seconds between clicks
-    const totalTicks   = 11;
-    for (let i = 0; i < totalTicks; i++) {
-      const t = ctx.currentTime + i * tickInterval;
+    // ~18 soft taps spread over the spin window, getting slightly faster
+    const totalTaps = 18;
+    const totalMs   = 700;
+    for (let i = 0; i < totalTaps; i++) {
+      // Accelerate slightly toward the end
+      const progress = i / totalTaps;
+      const delay = (progress * progress * 0.4 + progress * 0.6) * totalMs;
       const id = setTimeout(() => {
         if (_soundMuted) return;
         try {
           const c   = getAudioCtx();
-          const osc = c.createOscillator();
-          const g   = c.createGain();
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(1100, c.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(500, c.currentTime + 0.025);
-          g.gain.setValueAtTime(0.14, c.currentTime);
-          g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.04);
-          osc.connect(g); g.connect(c.destination);
-          osc.start(); osc.stop(c.currentTime + 0.045);
+          // Short filtered noise burst — sounds like a card flick
+          const bufLen = Math.floor(c.sampleRate * 0.035);
+          const buf    = c.createBuffer(1, bufLen, c.sampleRate);
+          const data   = buf.getChannelData(0);
+          for (let j = 0; j < bufLen; j++) data[j] = (Math.random() * 2 - 1);
+
+          const src  = c.createBufferSource();
+          src.buffer = buf;
+
+          const filt = c.createBiquadFilter();
+          filt.type  = 'bandpass';
+          // Slight pitch variation per tap for realism
+          filt.frequency.value = 2200 + (Math.random() - 0.5) * 600;
+          filt.Q.value = 1.2;
+
+          const g = c.createGain();
+          g.gain.setValueAtTime(0.07 + Math.random() * 0.03, c.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.032);
+
+          src.connect(filt); filt.connect(g); g.connect(c.destination);
+          src.start(); src.stop(c.currentTime + 0.04);
         } catch(e) {}
-      }, i * tickInterval * 1000);
+      }, delay);
       _spinClickTimers.push(id);
     }
   } catch(e) {}

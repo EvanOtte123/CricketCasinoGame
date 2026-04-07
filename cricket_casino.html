@@ -1826,6 +1826,62 @@ function playWicketSound() {
   } catch(e) {}
 }
 
+// BONUS trigger (WIDE / NO BALL) — casino slot bonus fanfare
+function playBonusSound() {
+  if (_soundMuted) return;
+  try {
+    const ctx = getAudioCtx();
+    // Rapid ascending staircase of bright tones, then a held shimmer
+    const steps = [
+      { freq: 440, t: 0.00, dur: 0.10 },
+      { freq: 554, t: 0.09, dur: 0.10 },
+      { freq: 659, t: 0.18, dur: 0.10 },
+      { freq: 880, t: 0.27, dur: 0.10 },
+      { freq: 1109,t: 0.36, dur: 0.10 },
+      { freq: 1319,t: 0.44, dur: 0.22 },  // top note holds longer
+    ];
+    steps.forEach(({ freq, t, dur }) => {
+      const now = ctx.currentTime;
+      // Sine layer (warm)
+      const osc1 = ctx.createOscillator();
+      const g1   = ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.value = freq;
+      g1.gain.setValueAtTime(0, now + t);
+      g1.gain.linearRampToValueAtTime(0.22, now + t + 0.018);
+      g1.gain.exponentialRampToValueAtTime(0.001, now + t + dur + 0.05);
+      osc1.connect(g1); g1.connect(ctx.destination);
+      osc1.start(now + t); osc1.stop(now + t + dur + 0.08);
+
+      // Triangle layer (bright shimmer on top)
+      const osc2 = ctx.createOscillator();
+      const g2   = ctx.createGain();
+      osc2.type = 'triangle';
+      osc2.frequency.value = freq * 2;
+      g2.gain.setValueAtTime(0, now + t);
+      g2.gain.linearRampToValueAtTime(0.09, now + t + 0.018);
+      g2.gain.exponentialRampToValueAtTime(0.001, now + t + dur);
+      osc2.connect(g2); g2.connect(ctx.destination);
+      osc2.start(now + t); osc2.stop(now + t + dur + 0.04);
+    });
+
+    // Sparkle tail — randomised high pings
+    for (let i = 0; i < 6; i++) {
+      const delay = 0.52 + i * 0.07;
+      const freq  = 1200 + Math.random() * 1000;
+      const osc   = ctx.createOscillator();
+      const g     = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      g.gain.setValueAtTime(0.10, ctx.currentTime + delay);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.12);
+      osc.connect(g); g.connect(ctx.destination);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.14);
+    }
+  } catch(e) {}
+}
+
 function runPop(text) {
   const el = document.createElement('div');
   el.className = 'fx-runpop';
@@ -2081,6 +2137,7 @@ function doMainSpin() {
     if (result.id === 'WIDE') {
       runs += 1;
       bonusMult = 2;
+      playBonusSound();
       $status.textContent = 'Wide ball! +1 Run added to your score...';
       updateDisplay();
       runPop('+1');
@@ -2098,6 +2155,7 @@ function doMainSpin() {
     if (result.id === 'NOBALL') {
       runs += 1;
       bonusMult = 3;
+      playBonusSound();
       $status.textContent = 'No Ball! +1 Run added to your score...';
       updateDisplay();
       runPop('+1');

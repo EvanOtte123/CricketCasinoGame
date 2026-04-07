@@ -347,7 +347,7 @@ body {
 #scoreBug {
   left: 0.5%;
   top: 17%;
-  width: min(24%, 220px);
+  width: 24%;
   padding: 0;
   overflow: visible;
   border: 1px solid rgba(255,214,102,0.45) !important;
@@ -473,7 +473,7 @@ body {
   bottom: 2%;
   left: 50%;
   transform: translateX(-50%);
-  width: min(92%, 700px);
+  width: 92%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1012,11 +1012,11 @@ input[type=number]:disabled, #depositBtn:disabled {
   font-weight: 900;
   letter-spacing: 1px;
   text-transform: uppercase;
-  padding: 4px 9px;
+  padding: calc(0.5 * var(--gvw)) calc(1.2 * var(--gvw));
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: calc(0.5 * var(--gvw));
   backdrop-filter: blur(10px);
   transition: background 0.15s, border-color 0.15s;
   white-space: nowrap;
@@ -1030,7 +1030,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   position: absolute;
   right: 0;
   top: calc(100% + 5px);
-  width: min(120px, calc(28 * var(--gvw)));
+  width: calc(28 * var(--gvw));
   max-height: 52vh;
   overflow-y: scroll;
   border-radius: 10px;

@@ -968,47 +968,57 @@ input[type=number]:disabled, #depositBtn:disabled {
 }
 
 /* ── PAYOUT DROPDOWN ── */
-.payout-toggle {
-  width: 100%;
-  margin-top: 9px;
-  padding: 7px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(255,214,102,0.28);
-  background: rgba(255,214,102,0.05);
-  color: rgba(255,214,102,0.8);
-  font-size: clamp(8px, 1vw, 10px);
+/* ── PAYOUT WIDGET (right-side floating) ── */
+#payoutWidget {
+  position: absolute;
+  right: 2%;
+  top: 10%;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+#payoutToggle {
+  background: rgba(8,10,14,0.88);
+  border: 1px solid rgba(255,214,102,0.5);
+  border-radius: 22px;
+  color: #ffd166;
+  font-size: clamp(9px, 1.1vw, 12px);
   font-weight: 900;
-  text-transform: uppercase;
   letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: clamp(5px,0.8vw,8px) clamp(10px,1.4vw,16px);
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  transition: background 0.15s;
+  gap: 6px;
+  backdrop-filter: blur(10px);
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.5);
 }
-.payout-toggle:hover { background: rgba(255,214,102,0.10); }
+#payoutToggle:hover { background: rgba(255,214,102,0.12); border-color: rgba(255,214,102,0.85); }
 .payout-arrow { transition: transform 0.22s; font-style: normal; }
 .payout-arrow.open { transform: rotate(180deg); }
-.payout-list {
+#payoutList {
   display: none;
   position: absolute;
-  left: 0;
-  top: 100%;
-  width: 100%;
-  max-height: 240px;
+  right: 0;
+  top: calc(100% + 6px);
+  width: min(175px, 44vw);
+  max-height: 58vh;
   overflow-y: scroll;
-  border-radius: 0 0 10px 10px;
-  border: 1px solid rgba(255,214,102,0.25);
-  border-top: none;
+  border-radius: 12px;
+  border: 1px solid rgba(255,214,102,0.3);
   background: rgba(4,6,14,0.97);
-  z-index: 50;
-  box-shadow: 0 12px 28px rgba(0,0,0,0.8);
+  z-index: 60;
+  box-shadow: 0 14px 34px rgba(0,0,0,0.88);
 }
-.payout-list.open { display: block; }
-.payout-list::-webkit-scrollbar { width: 8px; }
-.payout-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
-.payout-list::-webkit-scrollbar-thumb { background: rgba(255,214,102,0.55); border-radius: 4px; }
-.payout-list::-webkit-scrollbar-thumb:hover { background: rgba(255,214,102,0.85); }
+#payoutList.open { display: block; }
+#payoutList::-webkit-scrollbar { width: 9px; }
+#payoutList::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); border-radius: 5px; }
+#payoutList::-webkit-scrollbar-thumb { background: rgba(255,214,102,0.6); border-radius: 5px; }
+#payoutList::-webkit-scrollbar-thumb:hover { background: rgba(255,214,102,0.9); }
 .payout-row {
   display: flex;
   justify-content: space-between;
@@ -1145,6 +1155,14 @@ input[type=number]:disabled, #depositBtn:disabled {
   <!-- ── SETTINGS BUTTON ── -->
   <button id="settingsBtn" title="Game Rules">⚙️</button>
 
+  <!-- ── PAYOUT TABLE WIDGET (right side) ── -->
+  <div id="payoutWidget">
+    <button id="payoutToggle">
+      📊 <span>Payouts</span> <em class="payout-arrow" id="payoutArrow">▼</em>
+    </button>
+    <div id="payoutList"></div>
+  </div>
+
   <!-- ── RULES MODAL ── -->
   <div id="rulesModal" class="hidden">
     <div class="rules-box">
@@ -1252,13 +1270,6 @@ input[type=number]:disabled, #depositBtn:disabled {
     <div class="sb-cashout-box" id="cashoutRow">
       <div class="sb-cashout-lbl">💰 Cash Out Value</div>
       <div class="sb-cashout-val" id="evDisp">—</div>
-    </div>
-    <div class="panel-body" style="padding-top:6px;">
-      <button class="payout-toggle" id="payoutToggle">
-        <span>📊 Payout Table</span>
-        <em class="payout-arrow" id="payoutArrow">▼</em>
-      </button>
-      <div class="payout-list" id="payoutList"></div>
     </div>
   </div>
 
@@ -2049,6 +2060,14 @@ document.getElementById('payoutToggle').addEventListener('click', () => {
     updatePayoutHighlight();
     const current = document.getElementById(`pr-${runs}`);
     if (current) setTimeout(() => current.scrollIntoView({ block: 'nearest' }), 50);
+  }
+});
+
+// ── SPACEBAR = PLAY / BOWL ──
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && !$action.disabled && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    $action.click();
   }
 });
 

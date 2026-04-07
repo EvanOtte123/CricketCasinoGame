@@ -1578,6 +1578,9 @@ function spinThen(ms, outcome, cb) {
     ? SYMBOL_SVG[symbolKey]
     : `<span style="color:${outcome.color};text-shadow:0 0 18px ${outcome.color}">${outcome.label}</span>`;
 
+  // Start spin rattle sound
+  startSpinSound();
+
   // Start each reel cycling through symbols at a fast rate
   $reels.forEach((r, i) => {
     clearInterval(cycleIntervals[i]);
@@ -1599,7 +1602,8 @@ function spinThen(ms, outcome, cb) {
       cycleIntervals[i] = null;
       $reels[i].className = 'reel-symbol is-popping';
       $reels[i].innerHTML = symbolHTML;
-      if (i === 2) cb();
+      playLandSound(i);
+      if (i === 2) { stopSpinSound(); cb(); }
     }, ms + i * stagger);
   });
 }
@@ -1646,6 +1650,139 @@ function shake() {
   setTimeout(() => $game.classList.remove('shake'), 520);
 }
 
+// ═══════════════════════════════════════════════════════════════
+// SOUND FX  (Web Audio API — no external files)
+// ═══════════════════════════════════════════════════════════════
+let _audioCtx = null;
+function getAudioCtx() {
+  if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (_audioCtx.state === 'suspended') _audioCtx.resume();
+  return _audioCtx;
+}
+
+// Spinning rattle — band-pass filtered noise that loops
+let _spinSource = null, _spinGain = null;
+function startSpinSound() {
+  try {
+    const ctx = getAudioCtx();
+    const bufLen = ctx.sampleRate;
+    const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufLen; i++) data[i] = Math.random() * 2 - 1;
+
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.loop = true;
+
+    const filt = ctx.createBiquadFilter();
+    filt.type = 'bandpass';
+    filt.frequency.value = 900;
+    filt.Q.value = 0.6;
+
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.06);
+
+    src.connect(filt); filt.connect(gain); gain.connect(ctx.destination);
+    src.start();
+    _spinSource = src; _spinGain = gain;
+  } catch(e) {}
+}
+
+function stopSpinSound() {
+  try {
+    if (!_spinGain) return;
+    const ctx = getAudioCtx();
+    _spinGain.gain.setTargetAtTime(0, ctx.currentTime, 0.04);
+    const s = _spinSource;
+    setTimeout(() => { try { s.stop(); } catch(e) {} }, 250);
+    _spinSource = null; _spinGain = null;
+  } catch(e) {}
+}
+
+// Mechanical thud when a reel lands
+function playLandSound(reelIndex) {
+  try {
+    const ctx = getAudioCtx();
+    const t = ctx.currentTime;
+
+    // Low thump
+    const osc = ctx.createOscillator();
+    const g   = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(180 - reelIndex * 18, t);
+    osc.frequency.exponentialRampToValueAtTime(60, t + 0.12);
+    g.gain.setValueAtTime(0.55, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+    osc.connect(g); g.connect(ctx.destination);
+    osc.start(t); osc.stop(t + 0.2);
+
+    // Click transient
+    const click = ctx.createOscillator();
+    const cg    = ctx.createGain();
+    click.type = 'square';
+    click.frequency.value = 1200;
+    cg.gain.setValueAtTime(0.18, t);
+    cg.gain.exponentialRampToValueAtTime(0.001, t + 0.03);
+    click.connect(cg); cg.connect(ctx.destination);
+    click.start(t); click.stop(t + 0.035);
+  } catch(e) {}
+}
+
+// SIX! — triumphant ascending arpeggio
+function playSixSound() {
+  try {
+    const ctx = getAudioCtx();
+    [261, 330, 392, 523, 659, 784].forEach((freq, i) => {
+      const t   = ctx.currentTime + i * 0.09;
+      const osc = ctx.createOscillator();
+      const g   = ctx.createGain();
+      osc.type = i < 4 ? 'triangle' : 'sine';
+      osc.frequency.value = freq;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.28, t + 0.025);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.38);
+      osc.connect(g); g.connect(ctx.destination);
+      osc.start(t); osc.stop(t + 0.4);
+    });
+  } catch(e) {}
+}
+
+// FOUR — quick two-tone hit
+function playFourSound() {
+  try {
+    const ctx = getAudioCtx();
+    [330, 494].forEach((freq, i) => {
+      const t   = ctx.currentTime + i * 0.1;
+      const osc = ctx.createOscillator();
+      const g   = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      g.gain.setValueAtTime(0.22, t);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+      osc.connect(g); g.connect(ctx.destination);
+      osc.start(t); osc.stop(t + 0.28);
+    });
+  } catch(e) {}
+}
+
+// OUT / WICKET — descending sad wail
+function playWicketSound() {
+  try {
+    const ctx = getAudioCtx();
+    const t   = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const g   = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(320, t);
+    osc.frequency.exponentialRampToValueAtTime(80, t + 0.7);
+    g.gain.setValueAtTime(0.25, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.75);
+    osc.connect(g); g.connect(ctx.destination);
+    osc.start(t); osc.stop(t + 0.8);
+  } catch(e) {}
+}
+
 function runPop(text) {
   const el = document.createElement('div');
   el.className = 'fx-runpop';
@@ -1689,6 +1826,7 @@ function showMultCalc(bonusRuns, mult, gained) {
 // ═══════════════════════════════════════════════════════════════
 function triggerOut(isBonus) {
   phase = 'done';
+  playWicketSound();
   hideCashoutOffer();
   hideMultOverlay();
   document.getElementById('btnRow').style.display = 'none';
@@ -1953,7 +2091,8 @@ function doMainSpin() {
     }[result.id] || '';
     $status.textContent = subLabel;
 
-    if (result.id === 'SIX' || result.id === 'FOUR') shake();
+    if (result.id === 'SIX')  { shake(); playSixSound(); }
+    if (result.id === 'FOUR') { shake(); playFourSound(); }
 
     if (runs >= 36) { setTimeout(overComplete, 1200); return; }
     if (ballsLeft <= 0) { setTimeout(overComplete, 1200); return; }

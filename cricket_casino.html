@@ -730,7 +730,8 @@ input[type=number]:disabled, #depositBtn:disabled {
 .ov-title { font-size: clamp(26px, 4.5vw, 40px); font-weight: 900; color: #ffeab1; text-shadow: 0 0 22px rgba(255,214,102,0.5); }
 .ov-title.red { color: #ff6b6b; text-shadow: 0 0 22px rgba(255,60,60,0.5); }
 .ov-sub   { font-size: clamp(12px, 1.8vw, 15px); color: rgba(255,255,255,0.65); margin: 2px 0; }
-.ov-mult  { font-size: clamp(38px, 6vw, 56px); font-weight: 900; color: #ffd166; margin: 6px 0 14px; }
+.ov-mult  { font-size: clamp(38px, 6vw, 56px); font-weight: 900; color: #ffd166; margin: 6px 0 4px; }
+.ov-win   { font-size: clamp(18px, 2.8vw, 26px); font-weight: 800; color: #7fff8a; margin: 0 0 14px; letter-spacing: 1px; }
 .ov-btn {
   min-width: clamp(130px, 18vw, 170px);
   padding: clamp(9px,1.4vw,13px) 0;
@@ -1324,6 +1325,7 @@ input[type=number]:disabled, #depositBtn:disabled {
       <div class="ov-title" id="ovTitle">WICKET!</div>
       <div class="ov-sub"   id="ovSub">You were dismissed</div>
       <div class="ov-mult"  id="ovMult">0×</div>
+      <div class="ov-win"   id="ovWin">$0.00</div>
       <button class="ov-btn" id="ovBtn">Play Again</button>
     </div>
   </div>
@@ -1496,6 +1498,7 @@ const $overlay   = document.getElementById('overlay');
 const $ovTitle   = document.getElementById('ovTitle');
 const $ovSub     = document.getElementById('ovSub');
 const $ovMult    = document.getElementById('ovMult');
+const $ovWin     = document.getElementById('ovWin');
 const $ovBtn     = document.getElementById('ovBtn');
 const $runsD     = document.getElementById('runsDisp');
 const $ballsD    = document.getElementById('ballsDisp');
@@ -1702,6 +1705,8 @@ function triggerOut(isBonus) {
     $ovSub.textContent     = `Dismissed for ${runs} runs — you lose your entire bet`;
     $ovMult.textContent    = '0×';
     $ovMult.style.color    = '#ff6b6b';
+    $ovWin.textContent     = `-$${bet.toFixed(2)}`;
+    $ovWin.style.color     = '#ff6b6b';
     $overlay.classList.remove('hidden');
   }, 950);
 }
@@ -1725,11 +1730,14 @@ function overComplete() {
   else if (mult >= 2)  { sparkles(22); }
 
   setTimeout(() => {
+    const win = parseFloat((bet * mult).toFixed(2));
     $ovTitle.textContent  = runs >= 36 ? 'SIX SIXES!' : 'OVER!';
     $ovTitle.className    = 'ov-title';
     $ovSub.textContent    = `${runs} run${runs!==1?'s':''} scored this over`;
     $ovMult.textContent   = mult.toFixed(2) + '×';
     $ovMult.style.color   = mult >= 1 ? '#ffd166' : '#aaa';
+    $ovWin.textContent    = `$${win.toFixed(2)}`;
+    $ovWin.style.color    = mult >= 1 ? '#7fff8a' : '#aaa';
     $overlay.classList.remove('hidden');
   }, 1100);
 }
@@ -1778,6 +1786,8 @@ function executeCashout() {
   $ovSub.textContent    = `${runs} runs · You collected:`;
   $ovMult.textContent   = mult.toFixed(2) + '×';
   $ovMult.style.color   = '#ffd166';
+  $ovWin.textContent    = `$${win.toFixed(2)}`;
+  $ovWin.style.color    = '#7fff8a';
   $overlay.classList.remove('hidden');
 }
 

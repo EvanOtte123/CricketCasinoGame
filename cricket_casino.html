@@ -2,26 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Cricket Casino</title>
-<style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>Cricket Ca
 :root { color-scheme: dark; font-family: "Segoe UI", system-ui, sans-serif; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  min-height: 100vh;
+  width: 100%;
+  height: 100dvh;
   background: #050505;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
 #game {
   position: relative;
-  width: min(100vw, calc(100vh * 1199 / 1395));
-  height: min(100vh, calc(100vw * 1395 / 1199));
-  max-width: 860px;
-  max-height: 1000px;
+  width: min(100cqw, 100dvh * 1199 / 1395);
+  height: min(100dvh, 100cqw * 1395 / 1199);
+  container-type: inline-size;
 }
 
 #game.shake { animation: screenShake 520ms ease-out; }
@@ -63,9 +63,9 @@ body {
 }
 /* "THE" line */
 .title-the {
-  font-size: clamp(9px, 1.4vw, 15px);
+  font-size: clamp(9px, 1.4cqw, 15px);
   font-weight: 900;
-  letter-spacing: clamp(6px, 1.8vw, 22px);
+  letter-spacing: clamp(6px, 1.8cqw, 22px);
   color: rgba(255,220,120,0.85);
   text-transform: uppercase;
   display: flex;
@@ -77,7 +77,7 @@ body {
 .title-the::before, .title-the::after {
   content: '';
   display: block;
-  width: clamp(16px, 3.5vw, 42px);
+  width: clamp(16px, 3.5cqw, 42px);
   height: 1px;
   background: rgba(255,214,102,0.6);
 }
@@ -89,7 +89,7 @@ body {
   gap: 0;
 }
 .tl {
-  font-size: clamp(22px, 5vw, 56px);
+  font-size: clamp(22px, 5cqw, 86px);
   font-weight: 900;
   font-family: 'Arial Black', 'Impact', sans-serif;
   text-transform: uppercase;
@@ -116,17 +116,17 @@ body {
 }
 .tl-gap {
   display: inline-block;
-  width: clamp(8px, 1.4vw, 16px);
+  width: clamp(8px, 1.4cqw, 16px);
 }
 /* deco row */
 .title-deco {
   display: flex;
   align-items: center;
-  gap: clamp(6px, 1.4vw, 16px);
+  gap: clamp(6px, 1.4cqw, 16px);
   margin-top: 4px;
 }
 .title-deco-line {
-  width: clamp(30px, 6vw, 75px);
+  width: clamp(30px, 6cqw, 115px);
   height: 1.5px;
   background: linear-gradient(90deg, transparent, rgba(255,214,102,0.85));
 }
@@ -134,7 +134,7 @@ body {
   background: linear-gradient(90deg, rgba(255,214,102,0.85), transparent);
 }
 .title-deco-gem {
-  font-size: clamp(10px, 1.3vw, 15px);
+  font-size: clamp(10px, 1.3cqw, 15px);
   letter-spacing: 4px;
   animation: gemBounce 1.6s ease-in-out infinite;
 }
@@ -178,8 +178,8 @@ body {
 }
 
 .reel-win {
-  width: clamp(68px, 9.5vw, 96px);
-  height: clamp(68px, 9.5vw, 96px);
+  width: clamp(68px, 9.5cqw, 150px);
+  height: clamp(68px, 9.5cqw, 150px);
   border-radius: 14px;
   border: 2px solid rgba(255,214,102,0.75);
   background: rgba(4,6,10,0.96);
@@ -209,7 +209,7 @@ body {
   align-self: stretch;
 }
 .reel-symbol {
-  font-size: clamp(22px, 3.2vw, 36px);
+  font-size: clamp(22px, 3.2cqw, 56px);
   font-weight: 900;
   letter-spacing: 1px;
   text-align: center;
@@ -246,7 +246,7 @@ body {
 
 /* ── BONUS BADGE ── */
 #bonusBadge {
-  font-size: clamp(9px, 1.3vw, 11px);
+  font-size: clamp(9px, 1.3cqw, 11px);
   font-weight: 900;
   letter-spacing: 2px;
   padding: 4px 14px;
@@ -266,7 +266,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   z-index: 4;
-  font-size: clamp(10px, 1.4vw, 13px);
+  font-size: clamp(10px, 1.4cqw, 13px);
   font-weight: 900;
   letter-spacing: 2px;
   padding: 4px 16px;
@@ -290,7 +290,7 @@ body {
 /* ── BALL TRACKER ── */
 #ballTracker {
   display: flex;
-  gap: clamp(6px, 1vw, 10px);
+  gap: clamp(6px, 1cqw, 10px);
   z-index: 3;
   align-items: center;
   justify-content: center;
@@ -298,8 +298,8 @@ body {
 }
 
 .bd {
-  width: clamp(14px, 2vw, 20px);
-  height: clamp(14px, 2vw, 20px);
+  width: clamp(14px, 2cqw, 30px);
+  height: clamp(14px, 2cqw, 30px);
   border-radius: 50%;
   background: rgba(255,255,255,0.10);
   border: 2px solid rgba(255,255,255,0.2);
@@ -312,7 +312,7 @@ body {
 /* ── STATUS TEXT ── */
 #statusText {
   z-index: 3;
-  font-size: clamp(11px, 1.6vw, 14px);
+  font-size: clamp(11px, 1.6cqw, 22px);
   font-weight: 700;
   color: rgba(255,255,255,0.85);
   text-shadow: 0 2px 10px rgba(0,0,0,0.9);
@@ -334,13 +334,21 @@ body {
 }
 .panel-header-icon { font-size: 13px; line-height: 1; }
 .panel-header-title {
-  font-size: clamp(8px, 1.05vw, 10px);
+  font-size: clamp(8px, 1.05cqw, 10px);
   font-weight: 900;
   letter-spacing: 2.5px;
   text-transform: uppercase;
   color: rgba(255,214,102,0.85);
 }
-.panel-body  { padding: 11px 13px 13px; position: relative; }
+.panel-body {
+  width: 100%;
+  height: 100dvh;
+  background: #050505;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
 .panel-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 0 13px; }
 
 /* ── SCORE BUG ── */
@@ -373,7 +381,7 @@ body {
   pointer-events: none;
 }
 .sb-runs-lbl {
-  font-size: clamp(6px, 0.82vw, 8px);
+  font-size: clamp(6px, 0.82cqw, 8px);
   text-transform: uppercase;
   letter-spacing: 2px;
   color: rgba(255,214,102,0.55);
@@ -381,7 +389,7 @@ body {
   margin-bottom: 0;
 }
 .sb-runs-val {
-  font-size: clamp(46px, 6.6vw, 62px);
+  font-size: clamp(46px, 6.6cqw, 96px);
   font-weight: 900;
   line-height: 1;
   background: linear-gradient(180deg, #ffffff 0%, #fff3a0 30%, #ffd166 65%, #ff9500 100%);
@@ -392,7 +400,7 @@ body {
   margin-bottom: 0;
 }
 .sb-runs-suffix {
-  font-size: clamp(9px, 1.2vw, 12px);
+  font-size: clamp(9px, 1.2cqw, 12px);
   font-weight: 900;
   color: rgba(255,214,102,0.6);
   text-transform: uppercase;
@@ -414,7 +422,7 @@ body {
   border-right: 1px solid rgba(255,255,255,0.08);
 }
 .sb-cell-lbl {
-  font-size: clamp(5px, 0.72vw, 7px);
+  font-size: clamp(5px, 0.72cqw, 7px);
   text-transform: uppercase;
   letter-spacing: 1.5px;
   color: rgba(255,255,255,0.38);
@@ -422,7 +430,7 @@ body {
   margin-bottom: 3px;
 }
 .sb-cell-val {
-  font-size: clamp(16px, 2.2vw, 21px);
+  font-size: clamp(16px, 2.2cqw, 32px);
   font-weight: 900;
 }
 .sb-cell-val.val-balls {
@@ -453,7 +461,7 @@ body {
 }
 .sb-cashout-box.visible { display: block; }
 .sb-cashout-lbl {
-  font-size: clamp(5px, 0.72vw, 7px);
+  font-size: clamp(5px, 0.72cqw, 7px);
   text-transform: uppercase;
   letter-spacing: 1.5px;
   color: rgba(120,255,150,0.65);
@@ -461,7 +469,7 @@ body {
   margin-bottom: 2px;
 }
 .sb-cashout-val {
-  font-size: clamp(16px, 2.2vw, 21px);
+  font-size: clamp(16px, 2.2cqw, 32px);
   font-weight: 900;
   color: #7fff8a;
   text-shadow: 0 0 18px rgba(80,255,120,0.6);
@@ -499,7 +507,7 @@ body {
   gap: 6px;
 }
 .ctrl-header-title {
-  font-size: clamp(7px, 0.9vw, 9px);
+  font-size: clamp(7px, 0.9cqw, 9px);
   font-weight: 900;
   letter-spacing: 2.5px;
   text-transform: uppercase;
@@ -531,7 +539,7 @@ body {
   margin-top: 5px;
 }
 .ctrl-lbl {
-  font-size: clamp(7px, 0.9vw, 9px);
+  font-size: clamp(7px, 0.9cqw, 9px);
   text-transform: uppercase;
   letter-spacing: 2px;
   color: rgba(255,255,255,0.4);
@@ -539,7 +547,7 @@ body {
   margin-bottom: 5px;
 }
 #balDisplay {
-  font-size: clamp(20px, 2.8vw, 28px);
+  font-size: clamp(20px, 2.8cqw, 42px);
   font-weight: 900;
   color: #ffeab1;
   text-shadow: 0 0 18px rgba(255,214,102,0.35);
@@ -552,7 +560,7 @@ input[type=number] {
   border: 1px solid rgba(255,255,255,0.13);
   background: rgba(4,6,10,0.85);
   color: #f6f7fb;
-  font-size: clamp(15px, 2vw, 19px);
+  font-size: clamp(15px, 2cqw, 19px);
   font-weight: 700;
 }
 input[type=number]:focus { outline: none; border-color: rgba(255,214,102,0.5); }
@@ -568,7 +576,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   border: 1px solid rgba(90,190,255,0.45);
   background: linear-gradient(135deg, rgba(40,110,220,0.22), rgba(60,160,255,0.12));
   color: #80ccff;
-  font-size: clamp(9px, 1.1vw, 11px);
+  font-size: clamp(9px, 1.1cqw, 11px);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -584,7 +592,7 @@ input[type=number]:disabled, #depositBtn:disabled {
 #btnRow {
   position: relative;
   width: 100%;
-  height: clamp(52px, 8.5vw, 72px);
+  height: clamp(52px, 8.5cqw, 72px);
   pointer-events: none;
   flex-shrink: 0;
 }
@@ -596,13 +604,13 @@ input[type=number]:disabled, #depositBtn:disabled {
   top: 50%;
   transform: translate(-50%, -50%);
   pointer-events: auto;
-  min-width: clamp(145px, 24vw, 220px);
-  padding: clamp(12px,1.8vw,16px) clamp(22px,3.2vw,40px);
+  min-width: clamp(145px, 24cqw, 340px);
+  padding: clamp(12px,1.8cqw,16px) clamp(22px,3.2cqw,40px);
   border-radius: 18px;
   border: 2px solid rgba(255,185,35,0.9);
   background: linear-gradient(160deg, #b84400 0%, #e06000 30%, #ff8c00 60%, #e07200 100%);
   color: #fff5d6;
-  font-size: clamp(18px, 2.6vw, 26px);
+  font-size: clamp(18px, 2.6cqw, 40px);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 3px;
@@ -625,14 +633,14 @@ input[type=number]:disabled, #depositBtn:disabled {
   top: 50%;
   transform: translateY(-50%);
   pointer-events: auto;
-  width: clamp(68px, 9vw, 88px);
-  height: clamp(52px, 7vw, 68px);
+  width: clamp(68px, 9cqw, 136px);
+  height: clamp(52px, 7cqw, 104px);
   padding: 4px 6px;
   border-radius: 12px;
   border: 2px solid rgba(60,210,90,0.9);
   background: linear-gradient(135deg, #0a6e22 0%, #1aaa40 40%, #12c438 70%, #0e8f2c 100%);
   color: #d4ffe0;
-  font-size: clamp(8px, 1.1vw, 11px);
+  font-size: clamp(8px, 1.1cqw, 11px);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -650,8 +658,8 @@ input[type=number]:disabled, #depositBtn:disabled {
   box-shadow: 0 4px 26px rgba(20,200,70,0.7), 0 0 38px rgba(40,220,80,0.32);
   transform: translateY(calc(-50% - 1px));
 }
-#cashoutBtn .co-label { font-size: clamp(7px, 0.95vw, 9px); letter-spacing: 1px; opacity: 0.85; }
-#cashoutBtn .co-mult  { font-size: clamp(12px, 1.7vw, 17px); font-weight: 900; color: #7fff8a; }
+#cashoutBtn .co-label { font-size: clamp(7px, 0.95cqw, 9px); letter-spacing: 1px; opacity: 0.85; }
+#cashoutBtn .co-mult  { font-size: clamp(12px, 1.7cqw, 17px); font-weight: 900; color: #7fff8a; }
 
 /* ── FX LAYER ── */
 #fxLayer { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: hidden; }
@@ -687,7 +695,7 @@ input[type=number]:disabled, #depositBtn:disabled {
 .fx-runpop {
   position: absolute;
   transform: translate(-50%,-50%);
-  font-size: clamp(28px, 5vw, 52px);
+  font-size: clamp(28px, 5cqw, 52px);
   font-weight: 900;
   color: #ffd166;
   text-shadow: 0 0 24px rgba(255,214,102,0.8);
@@ -719,7 +727,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   background: rgba(7,9,14,0.94);
   border: 2px solid rgba(255,214,102,0.55);
   border-radius: 26px;
-  padding: clamp(24px,4vw,40px) clamp(30px,5vw,56px);
+  padding: clamp(24px,4cqw,40px) clamp(30px,5cqw,56px);
   text-align: center;
   box-shadow: 0 0 70px rgba(255,178,58,0.18);
   display: flex;
@@ -727,19 +735,19 @@ input[type=number]:disabled, #depositBtn:disabled {
   align-items: center;
   gap: 6px;
 }
-.ov-title { font-size: clamp(26px, 4.5vw, 40px); font-weight: 900; color: #ffeab1; text-shadow: 0 0 22px rgba(255,214,102,0.5); }
+.ov-title { font-size: clamp(26px, 4.5cqw, 62px); font-weight: 900; color: #ffeab1; text-shadow: 0 0 22px rgba(255,214,102,0.5); }
 .ov-title.red { color: #ff6b6b; text-shadow: 0 0 22px rgba(255,60,60,0.5); }
-.ov-sub   { font-size: clamp(12px, 1.8vw, 15px); color: rgba(255,255,255,0.65); margin: 2px 0; }
-.ov-mult  { font-size: clamp(38px, 6vw, 56px); font-weight: 900; color: #ffd166; margin: 6px 0 4px; }
-.ov-win   { font-size: clamp(18px, 2.8vw, 26px); font-weight: 800; color: #7fff8a; margin: 0 0 14px; letter-spacing: 1px; }
+.ov-sub   { font-size: clamp(12px, 1.8cqw, 23px); color: rgba(255,255,255,0.65); margin: 2px 0; }
+.ov-mult  { font-size: clamp(38px, 6cqw, 86px); font-weight: 900; color: #ffd166; margin: 6px 0 4px; }
+.ov-win   { font-size: clamp(18px, 2.8cqw, 40px); font-weight: 800; color: #7fff8a; margin: 0 0 14px; letter-spacing: 1px; }
 .ov-btn {
-  min-width: clamp(130px, 18vw, 170px);
-  padding: clamp(9px,1.4vw,13px) 0;
+  min-width: clamp(130px, 18cqw, 260px);
+  padding: clamp(9px,1.4cqw,13px) 0;
   border-radius: 14px;
   border: 2px solid rgba(255,214,102,0.8);
   background: rgba(255,178,58,0.14);
   color: #ffeab1;
-  font-size: clamp(13px, 1.8vw, 16px);
+  font-size: clamp(13px, 1.8cqw, 24px);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -752,7 +760,7 @@ input[type=number]:disabled, #depositBtn:disabled {
 .co-payout-row {
   display: flex;
   align-items: center;
-  gap: clamp(12px, 2.5vw, 24px);
+  gap: clamp(12px, 2.5cqw, 24px);
   margin: 10px 0 4px;
 }
 .co-payout-cell {
@@ -762,39 +770,39 @@ input[type=number]:disabled, #depositBtn:disabled {
   gap: 3px;
 }
 .co-payout-lbl {
-  font-size: clamp(7px, 0.9vw, 9px);
+  font-size: clamp(7px, 0.9cqw, 9px);
   text-transform: uppercase;
   letter-spacing: 2px;
   color: rgba(255,255,255,0.4);
   font-weight: 900;
 }
 .co-payout-mult {
-  font-size: clamp(30px, 4.8vw, 46px);
+  font-size: clamp(30px, 4.8cqw, 46px);
   font-weight: 900;
   color: #ffd166;
   text-shadow: 0 0 22px rgba(255,209,102,0.7);
   line-height: 1;
 }
 .co-payout-arrow {
-  font-size: clamp(20px, 3vw, 28px);
+  font-size: clamp(20px, 3cqw, 28px);
   color: rgba(255,255,255,0.35);
   font-weight: 300;
 }
 .co-payout-dollar {
-  font-size: clamp(30px, 4.8vw, 46px);
+  font-size: clamp(30px, 4.8cqw, 46px);
   font-weight: 900;
   color: #7fff8a;
   text-shadow: 0 0 22px rgba(80,255,120,0.6);
   line-height: 1;
 }
 .co-bet-line {
-  font-size: clamp(10px, 1.3vw, 12px);
+  font-size: clamp(10px, 1.3cqw, 12px);
   color: rgba(255,255,255,0.38);
   margin-bottom: 8px;
 }
 .co-btn-row {
   display: flex;
-  gap: clamp(10px, 2vw, 18px);
+  gap: clamp(10px, 2cqw, 18px);
   margin-top: 4px;
 }
 .co-confirm-btn {
@@ -826,16 +834,16 @@ input[type=number]:disabled, #depositBtn:disabled {
   position: absolute;
   right: 2%;
   left: auto;
-  top: calc(2% + clamp(38px, 5.2vw, 52px) + 6px);
+  top: calc(2% + clamp(38px, 5.2cqw, 52px) + 6px);
   z-index: 5;
-  width: clamp(34px, 4.5vw, 44px);
-  height: clamp(34px, 4.5vw, 44px);
+  width: clamp(34px, 4.5cqw, 44px);
+  height: clamp(34px, 4.5cqw, 44px);
   border-radius: 50%;
   border: 1px solid rgba(255,214,102,0.45);
   background: rgba(8,10,12,0.70);
   backdrop-filter: blur(8px);
   color: rgba(255,214,102,0.85);
-  font-size: clamp(15px, 2.1vw, 20px);
+  font-size: clamp(15px, 2.1cqw, 20px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -852,14 +860,14 @@ input[type=number]:disabled, #depositBtn:disabled {
   left: auto;
   top: 2%;
   z-index: 5;
-  width: clamp(34px, 4.5vw, 44px);
-  height: clamp(34px, 4.5vw, 44px);
+  width: clamp(34px, 4.5cqw, 44px);
+  height: clamp(34px, 4.5cqw, 44px);
   border-radius: 50%;
   border: 1px solid rgba(255,214,102,0.45);
   background: rgba(8,10,12,0.70);
   backdrop-filter: blur(8px);
   color: rgba(255,214,102,0.85);
-  font-size: clamp(15px, 2.1vw, 20px);
+  font-size: clamp(15px, 2.1cqw, 20px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -887,7 +895,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   background: rgba(7,9,14,0.97);
   border: 2px solid rgba(255,214,102,0.45);
   border-radius: 22px;
-  width: clamp(280px, 58vw, 560px);
+  width: clamp(280px, 58cqw, 800px);
   max-height: 75vh;
   overflow-y: auto;
   box-shadow: 0 0 60px rgba(255,178,58,0.15);
@@ -910,7 +918,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   z-index: 1;
 }
 .rules-title {
-  font-size: clamp(14px, 2vw, 18px);
+  font-size: clamp(14px, 2cqw, 18px);
   font-weight: 900;
   color: #ffeab1;
   letter-spacing: 2px;
@@ -930,9 +938,17 @@ input[type=number]:disabled, #depositBtn:disabled {
   transition: background 0.15s;
 }
 .rules-close:hover { background: rgba(255,80,80,0.3); color: #fff; }
-.rules-body { padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 14px; }
+.rules-body {
+  width: 100%;
+  height: 100dvh;
+  background: #050505;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
 .rules-section-title {
-  font-size: clamp(9px, 1.2vw, 11px);
+  font-size: clamp(9px, 1.2cqw, 11px);
   font-weight: 900;
   letter-spacing: 2.5px;
   text-transform: uppercase;
@@ -940,7 +956,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   margin-bottom: 6px;
 }
 .rules-text {
-  font-size: clamp(11px, 1.4vw, 13px);
+  font-size: clamp(11px, 1.4cqw, 13px);
   color: rgba(255,255,255,0.75);
   line-height: 1.6;
 }
@@ -955,7 +971,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   border-radius: 8px;
 }
 .ro-badge {
-  font-size: clamp(9px, 1.1vw, 11px);
+  font-size: clamp(9px, 1.1cqw, 11px);
   font-weight: 900;
   letter-spacing: 1px;
   padding: 2px 8px;
@@ -969,7 +985,7 @@ input[type=number]:disabled, #depositBtn:disabled {
 .ro-badge.blue   { background: rgba(80,180,255,0.15);  border: 1px solid rgba(80,180,255,0.35); color: #7bcfff; }
 .ro-badge.orange { background: rgba(255,120,40,0.18);  border: 1px solid rgba(255,120,40,0.4);  color: #ff8c35; }
 .ro-desc {
-  font-size: clamp(10px, 1.3vw, 12px);
+  font-size: clamp(10px, 1.3cqw, 12px);
   color: rgba(255,255,255,0.68);
   line-height: 1.5;
 }
@@ -980,14 +996,14 @@ input[type=number]:disabled, #depositBtn:disabled {
   padding: 11px 14px;
 }
 .rules-ev-title {
-  font-size: clamp(10px, 1.3vw, 12px);
+  font-size: clamp(10px, 1.3cqw, 12px);
   font-weight: 900;
   color: #7fff8a;
   margin-bottom: 5px;
   letter-spacing: 1px;
 }
 .rules-ev-text {
-  font-size: clamp(10px, 1.3vw, 12px);
+  font-size: clamp(10px, 1.3cqw, 12px);
   color: rgba(200,255,210,0.75);
   line-height: 1.6;
 }
@@ -1008,7 +1024,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   border: 1px solid rgba(255,214,102,0.5);
   border-radius: 16px;
   color: #ffd166;
-  font-size: clamp(7px, 0.9vw, 10px);
+  font-size: clamp(7px, 0.9cqw, 10px);
   font-weight: 900;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -1030,7 +1046,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   position: absolute;
   right: 0;
   top: calc(100% + 5px);
-  width: min(120px, 28vw);
+  width: min(120px, 28cqw);
   max-height: 52vh;
   overflow-y: scroll;
   border-radius: 10px;
@@ -1050,7 +1066,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   align-items: center;
   padding: 5px 10px;
   border-bottom: 1px solid rgba(255,255,255,0.05);
-  font-size: clamp(9px, 1.1vw, 11px);
+  font-size: clamp(9px, 1.1cqw, 11px);
 }
 .payout-row:last-child { border-bottom: none; }
 .payout-row.current {
@@ -1083,7 +1099,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   100% { opacity:1; transform:translate(-50%,-50%) scale(1); }
 }
 #multOverlay .mo-header {
-  font-size: clamp(10px, 1.5vw, 13px);
+  font-size: clamp(10px, 1.5cqw, 13px);
   font-weight: 900;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -1091,7 +1107,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   text-shadow: 0 2px 12px rgba(0,0,0,0.98);
 }
 #multOverlay .mo-badge {
-  font-size: clamp(62px, 9.5vw, 96px);
+  font-size: clamp(62px, 9.5cqw, 96px);
   font-weight: 900;
   line-height: 1;
   animation: moBadgePulse 0.9s ease-in-out infinite;
@@ -1105,7 +1121,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   text-shadow: 0 0 40px rgba(255,130,53,0.95), 0 0 80px rgba(255,100,53,0.45);
 }
 #multOverlay .mo-footer {
-  font-size: clamp(8px, 1.1vw, 11px);
+  font-size: clamp(8px, 1.1cqw, 11px);
   font-weight: 900;
   letter-spacing: 3.5px;
   text-transform: uppercase;
@@ -1130,7 +1146,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   animation: multCalcAnim 2.1s ease-out forwards;
 }
 .mult-calc-equation {
-  font-size: clamp(18px, 2.6vw, 26px);
+  font-size: clamp(18px, 2.6cqw, 40px);
   font-weight: 900;
   color: rgba(255,255,255,0.88);
   text-shadow: 0 2px 14px rgba(0,0,0,0.98);
@@ -1138,7 +1154,7 @@ input[type=number]:disabled, #depositBtn:disabled {
   margin-bottom: 4px;
 }
 .mult-calc-result {
-  font-size: clamp(42px, 6.5vw, 66px);
+  font-size: clamp(42px, 6.5cqw, 66px);
   font-weight: 900;
   line-height: 1;
   text-shadow: 0 2px 16px rgba(0,0,0,0.98);
@@ -1152,6 +1168,8 @@ input[type=number]:disabled, #depositBtn:disabled {
   36%  { transform:translate(-50%,-50%) scale(1); }
   72%  { opacity:1; }
   100% { opacity:0; transform:translate(-50%,-68%) scale(0.88); }
+}
+%) scale(0.88); }
 }
 </style>
 </head>

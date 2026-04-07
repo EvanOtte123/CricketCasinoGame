@@ -340,7 +340,7 @@ body {
   text-transform: uppercase;
   color: rgba(255,214,102,0.85);
 }
-.panel-body  { padding: 11px 13px 13px; }
+.panel-body  { padding: 11px 13px 13px; position: relative; }
 .panel-divider { height: 1px; background: rgba(255,255,255,0.07); margin: 0 13px; }
 
 /* ── SCORE BUG ── */
@@ -349,7 +349,7 @@ body {
   top: 17%;
   width: min(24%, 220px);
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid rgba(255,214,102,0.45) !important;
   box-shadow: 0 0 28px rgba(255,178,58,0.18), inset 0 0 18px rgba(255,214,102,0.04);
 }
@@ -991,17 +991,24 @@ input[type=number]:disabled, #depositBtn:disabled {
 .payout-arrow.open { transform: rotate(180deg); }
 .payout-list {
   display: none;
-  margin-top: 6px;
-  max-height: 160px;
-  overflow-y: auto;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.08);
-  background: rgba(4,6,10,0.75);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  max-height: 240px;
+  overflow-y: scroll;
+  border-radius: 0 0 10px 10px;
+  border: 1px solid rgba(255,214,102,0.25);
+  border-top: none;
+  background: rgba(4,6,14,0.97);
+  z-index: 50;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.8);
 }
 .payout-list.open { display: block; }
-.payout-list::-webkit-scrollbar { width: 4px; }
-.payout-list::-webkit-scrollbar-track { background: transparent; }
-.payout-list::-webkit-scrollbar-thumb { background: rgba(255,214,102,0.3); border-radius: 3px; }
+.payout-list::-webkit-scrollbar { width: 8px; }
+.payout-list::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 4px; }
+.payout-list::-webkit-scrollbar-thumb { background: rgba(255,214,102,0.55); border-radius: 4px; }
+.payout-list::-webkit-scrollbar-thumb:hover { background: rgba(255,214,102,0.85); }
 .payout-row {
   display: flex;
   justify-content: space-between;
@@ -1872,13 +1879,16 @@ function doMainSpin() {
     if (result.id === 'WIDE') {
       runs += 1;
       bonusMult = 2;
-      $illegal.className = 'wide';
-      $illegal.textContent = 'WIDE  +1 RUN';
-      $status.textContent = 'Wide! +1 run — 2× bonus spin incoming...';
+      $status.textContent = 'Wide ball! +1 Run added to your score...';
       updateDisplay();
       runPop('+1');
-      showMultOverlay(2, 'WIDE  •  +1 RUN');
-      setTimeout(doBonusSpin, 1500);
+      // Step 1: show +1 run, then after a pause reveal the multiplier overlay
+      setTimeout(() => {
+        $status.textContent = 'Wide ball — 2× Bonus Spin incoming! Get ready...';
+        showMultOverlay(2, 'WIDE  •  +1 RUN');
+        // Step 2: hold the overlay so the player can take it in, then spin
+        setTimeout(doBonusSpin, 3000);
+      }, 1400);
       return;
     }
 
@@ -1886,13 +1896,16 @@ function doMainSpin() {
     if (result.id === 'NOBALL') {
       runs += 1;
       bonusMult = 3;
-      $illegal.className = 'noball';
-      $illegal.textContent = 'NO BALL  +1 RUN';
-      $status.textContent = 'No Ball! +1 run — 3× bonus spin incoming...';
+      $status.textContent = 'No Ball! +1 Run added to your score...';
       updateDisplay();
       runPop('+1');
-      showMultOverlay(3, 'NO BALL  •  +1 RUN');
-      setTimeout(doBonusSpin, 1500);
+      // Step 1: show +1 run, then after a pause reveal the multiplier overlay
+      setTimeout(() => {
+        $status.textContent = 'No Ball — 3× Bonus Spin incoming! Get ready...';
+        showMultOverlay(3, 'NO BALL  •  +1 RUN');
+        // Step 2: hold the overlay so the player can take it in, then spin
+        setTimeout(doBonusSpin, 3000);
+      }, 1400);
       return;
     }
 

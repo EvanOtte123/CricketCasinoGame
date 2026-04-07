@@ -821,6 +821,30 @@ input[type=number]:disabled, #depositBtn:disabled {
   display: none;
 }
 
+/* ── MUTE BUTTON ── */
+#muteBtn {
+  position: absolute;
+  right: 2%;
+  left: auto;
+  top: calc(2% + clamp(38px, 5.2vw, 52px) + 6px);
+  z-index: 5;
+  width: clamp(34px, 4.5vw, 44px);
+  height: clamp(34px, 4.5vw, 44px);
+  border-radius: 50%;
+  border: 1px solid rgba(255,214,102,0.45);
+  background: rgba(8,10,12,0.70);
+  backdrop-filter: blur(8px);
+  color: rgba(255,214,102,0.85);
+  font-size: clamp(15px, 2.1vw, 20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s;
+}
+#muteBtn:hover { background: rgba(255,178,58,0.18); box-shadow: 0 0 16px rgba(255,178,58,0.25); }
+#muteBtn.muted { color: rgba(255,100,100,0.85); border-color: rgba(255,100,100,0.45); }
+
 /* ── SETTINGS BUTTON ── */
 #settingsBtn {
   position: absolute;
@@ -1155,6 +1179,9 @@ input[type=number]:disabled, #depositBtn:disabled {
 
   <!-- ── SETTINGS BUTTON ── -->
   <button id="settingsBtn" title="Game Rules">⚙️</button>
+
+  <!-- ── MUTE BUTTON ── -->
+  <button id="muteBtn" title="Toggle Sound">🔊</button>
 
   <!-- ── PAYOUT TABLE WIDGET (right side) ── -->
   <div id="payoutWidget">
@@ -1653,6 +1680,7 @@ function shake() {
 // ═══════════════════════════════════════════════════════════════
 // SOUND FX  (Web Audio API — no external files)
 // ═══════════════════════════════════════════════════════════════
+let _soundMuted = false;
 let _audioCtx = null;
 function getAudioCtx() {
   if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1660,48 +1688,46 @@ function getAudioCtx() {
   return _audioCtx;
 }
 
-// Spinning rattle — band-pass filtered noise that loops
-let _spinSource = null, _spinGain = null;
+// Slot-machine ratchet click — rapid ticks that play for the spin duration
+let _spinClickTimers = [];
 function startSpinSound() {
+  if (_soundMuted) return;
   try {
+    stopSpinSound();
     const ctx = getAudioCtx();
-    const bufLen = ctx.sampleRate;
-    const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < bufLen; i++) data[i] = Math.random() * 2 - 1;
-
-    const src = ctx.createBufferSource();
-    src.buffer = buf;
-    src.loop = true;
-
-    const filt = ctx.createBiquadFilter();
-    filt.type = 'bandpass';
-    filt.frequency.value = 900;
-    filt.Q.value = 0.6;
-
-    const gain = ctx.createGain();
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.06);
-
-    src.connect(filt); filt.connect(gain); gain.connect(ctx.destination);
-    src.start();
-    _spinSource = src; _spinGain = gain;
+    // Schedule rapid click ticks for ~800ms (covers the spin window)
+    const tickInterval = 0.072; // seconds between clicks
+    const totalTicks   = 11;
+    for (let i = 0; i < totalTicks; i++) {
+      const t = ctx.currentTime + i * tickInterval;
+      const id = setTimeout(() => {
+        if (_soundMuted) return;
+        try {
+          const c   = getAudioCtx();
+          const osc = c.createOscillator();
+          const g   = c.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(1100, c.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(500, c.currentTime + 0.025);
+          g.gain.setValueAtTime(0.14, c.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.04);
+          osc.connect(g); g.connect(c.destination);
+          osc.start(); osc.stop(c.currentTime + 0.045);
+        } catch(e) {}
+      }, i * tickInterval * 1000);
+      _spinClickTimers.push(id);
+    }
   } catch(e) {}
 }
 
 function stopSpinSound() {
-  try {
-    if (!_spinGain) return;
-    const ctx = getAudioCtx();
-    _spinGain.gain.setTargetAtTime(0, ctx.currentTime, 0.04);
-    const s = _spinSource;
-    setTimeout(() => { try { s.stop(); } catch(e) {} }, 250);
-    _spinSource = null; _spinGain = null;
-  } catch(e) {}
+  _spinClickTimers.forEach(id => clearTimeout(id));
+  _spinClickTimers = [];
 }
 
 // Mechanical thud when a reel lands
 function playLandSound(reelIndex) {
+  if (_soundMuted) return;
   try {
     const ctx = getAudioCtx();
     const t = ctx.currentTime;
@@ -1731,6 +1757,7 @@ function playLandSound(reelIndex) {
 
 // SIX! — triumphant ascending arpeggio
 function playSixSound() {
+  if (_soundMuted) return;
   try {
     const ctx = getAudioCtx();
     [261, 330, 392, 523, 659, 784].forEach((freq, i) => {
@@ -1750,6 +1777,7 @@ function playSixSound() {
 
 // FOUR — quick two-tone hit
 function playFourSound() {
+  if (_soundMuted) return;
   try {
     const ctx = getAudioCtx();
     [330, 494].forEach((freq, i) => {
@@ -1768,6 +1796,7 @@ function playFourSound() {
 
 // OUT / WICKET — descending sad wail
 function playWicketSound() {
+  if (_soundMuted) return;
   try {
     const ctx = getAudioCtx();
     const t   = ctx.currentTime;
@@ -2163,6 +2192,15 @@ document.getElementById('depositBtn').addEventListener('click', () => {
 // ═══════════════════════════════════════════════════════════════
 document.getElementById('settingsBtn').addEventListener('click', () => {
   document.getElementById('rulesModal').classList.remove('hidden');
+});
+
+// ── MUTE BUTTON ──
+const $muteBtn = document.getElementById('muteBtn');
+$muteBtn.addEventListener('click', () => {
+  _soundMuted = !_soundMuted;
+  $muteBtn.textContent = _soundMuted ? '🔇' : '🔊';
+  $muteBtn.classList.toggle('muted', _soundMuted);
+  if (_soundMuted) stopSpinSound();
 });
 document.getElementById('rulesClose').addEventListener('click', () => {
   document.getElementById('rulesModal').classList.add('hidden');

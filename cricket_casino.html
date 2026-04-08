@@ -178,8 +178,8 @@ body {
 }
 
 .reel-win {
-  width: clamp(68px, calc(9.5 * var(--gvw)), 96px);
-  height: clamp(68px, calc(9.5 * var(--gvw)), 96px);
+  width: clamp(80px, calc(11.5 * var(--gvw)), 112px);
+  height: clamp(80px, calc(11.5 * var(--gvw)), 112px);
   border-radius: 14px;
   border: 2px solid rgba(255,214,102,0.75);
   background: rgba(4,6,10,0.96);
@@ -298,8 +298,8 @@ body {
 }
 
 .bd {
-  width: clamp(14px, calc(2 * var(--gvw)), 20px);
-  height: clamp(14px, calc(2 * var(--gvw)), 20px);
+  width: clamp(17px, calc(2.5 * var(--gvw)), 24px);
+  height: clamp(17px, calc(2.5 * var(--gvw)), 24px);
   border-radius: 50%;
   background: rgba(255,255,255,0.10);
   border: 2px solid rgba(255,255,255,0.2);
@@ -470,7 +470,7 @@ body {
 /* ── BOTTOM SECTION wrapper ── */
 #bottomSection {
   position: absolute;
-  bottom: 2%;
+  bottom: 4%;
   left: 50%;
   transform: translateX(-50%);
   width: 92%;
@@ -509,7 +509,7 @@ body {
   display: flex;
   align-items: stretch;
   gap: 0;
-  padding: 8px 16px 10px;
+  padding: 10px 16px 14px;
 }
 .ctrl-cell {
   flex: 1;
@@ -539,7 +539,7 @@ body {
   margin-bottom: 5px;
 }
 #balDisplay {
-  font-size: clamp(20px, calc(2.8 * var(--gvw)), 28px);
+  font-size: clamp(22px, calc(3.2 * var(--gvw)), 34px);
   font-weight: 900;
   color: #ffeab1;
   text-shadow: 0 0 18px rgba(255,214,102,0.35);
@@ -584,7 +584,7 @@ input[type=number]:disabled, #depositBtn:disabled {
 #btnRow {
   position: relative;
   width: 100%;
-  height: clamp(52px, calc(8.5 * var(--gvw)), 72px);
+  height: clamp(62px, calc(10 * var(--gvw)), 84px);
   pointer-events: none;
   flex-shrink: 0;
 }
@@ -596,13 +596,13 @@ input[type=number]:disabled, #depositBtn:disabled {
   top: 50%;
   transform: translate(-50%, -50%);
   pointer-events: auto;
-  min-width: clamp(145px, calc(24 * var(--gvw)), 220px);
-  padding: clamp(12px,calc(1.8 * var(--gvw)),16px) clamp(22px,calc(3.2 * var(--gvw)),40px);
+  min-width: clamp(165px, calc(27 * var(--gvw)), 250px);
+  padding: clamp(14px,calc(2.2 * var(--gvw)),20px) clamp(28px,calc(4 * var(--gvw)),48px);
   border-radius: 18px;
   border: 2px solid rgba(255,185,35,0.9);
   background: linear-gradient(160deg, #b84400 0%, #e06000 30%, #ff8c00 60%, #e07200 100%);
   color: #fff5d6;
-  font-size: clamp(18px, calc(2.6 * var(--gvw)), 26px);
+  font-size: clamp(20px, calc(3 * var(--gvw)), 30px);
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 3px;
@@ -1008,11 +1008,11 @@ input[type=number]:disabled, #depositBtn:disabled {
   border: 1px solid rgba(255,214,102,0.5);
   border-radius: 16px;
   color: #ffd166;
-  font-size: clamp(7px, calc(0.9 * var(--gvw)), 10px);
+  font-size: clamp(9px, calc(1.1 * var(--gvw)), 13px);
   font-weight: 900;
   letter-spacing: 1px;
   text-transform: uppercase;
-  padding: calc(0.5 * var(--gvw)) calc(1.2 * var(--gvw));
+  padding: calc(0.7 * var(--gvw)) calc(1.5 * var(--gvw));
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1030,7 +1030,8 @@ input[type=number]:disabled, #depositBtn:disabled {
   position: absolute;
   right: 0;
   top: calc(100% + 5px);
-  width: calc(28 * var(--gvw));
+  width: calc(20 * var(--gvw));
+  min-width: 130px;
   max-height: 52vh;
   overflow-y: scroll;
   border-radius: 10px;
